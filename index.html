@@ -649,9 +649,17 @@ body {
 
 ```
   <div class="card">
-    <div class="section-title">💼 הכנסות</div>
-    <div id="income-settings"></div>
-    <button class="btn btn-outline" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
+    <div class="section-title">💰 הכנסות קבועות</div>
+    <div id="recurring-income-settings"></div>
+    <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addRecurringIncome()">+ הוסף הכנסה קבועה</button>
+    <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">📌 הוצאות קבועות</div>
+    <div id="recurring-expense-settings"></div>
+    <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addRecurringExpense()">+ הוסף הוצאה קבועה</button>
+    <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
   </div>
 
   <div class="card">
@@ -662,13 +670,6 @@ body {
       <span id="pct-total" style="font-weight:700">0%</span>
     </div>
     <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
-  </div>
-
-  <div class="card">
-    <div class="section-title">📌 הוצאות קבועות</div>
-    <div id="fixed-settings"></div>
-    <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addFixedExpense()">+ הוסף הוצאה קבועה</button>
-    <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
   </div>
 
   <div class="card">
@@ -739,7 +740,11 @@ let state = {
     fixedExpenses: [
       { label: "שכירות", cat: "🏠 דיור / שכירות", amount: 0 },
       { label: "ביטוח רכב", cat: "🚗 רכב ותחבורה", amount: 0 }
-    ]
+    ],
+    recurringIncome: [
+      { label: "משכורת", amount: 11787, day: 10 }
+    ],
+    recurringExpenses: []
   }
 };
 
@@ -775,7 +780,13 @@ function showPage(id) {
 }
 
 // ══ HELPERS ──────────────────────────────────────────────────
-function totalIncome() { return state.settings.income.reduce((s,r) => s + (+r.amount||0), 0); }
+function totalIncome() {
+  // Primary: sum of recurring income (משכורת וכו')
+  const recurring = (state.settings.recurringIncome || []).reduce((s,r) => s + (+r.amount||0), 0);
+  // Fallback: old income settings if no recurring defined
+  if (recurring > 0) return recurring;
+  return state.settings.income.reduce((s,r) => s + (+r.amount||0), 0);
+}
 function budgetForCat(cat) { return ((state.settings.budget[cat]||0)/100) * totalIncome(); }
 
 function txForMonth(m) {
@@ -1422,9 +1433,51 @@ function downloadSampleCSV() {
 
 // ══ SETTINGS ─────────────────────────────────────────────────
 function renderSettings() {
-  // Income
+  // Recurring income
+  const riEl = document.getElementById('recurring-income-settings');
+  if (riEl) {
+    if (!state.settings.recurringIncome) state.settings.recurringIncome = [];
+    riEl.innerHTML = state.settings.recurringIncome.map((row, i) => `
+      <div class="settings-row" style="gap:6px;flex-wrap:wrap">
+        <input class="form-input" style="flex:1;min-width:100px;font-size:13px" value="${row.label}"
+               onchange="state.settings.recurringIncome[${i}].label=this.value" placeholder="תיאור">
+        <input class="settings-input" type="number" value="${row.amount||0}" min="0" style="width:90px"
+               onchange="state.settings.recurringIncome[${i}].amount=+this.value;updatePctTotal()">
+        <div style="display:flex;align-items:center;gap:4px;font-size:13px">
+          <span style="color:var(--muted)">יום</span>
+          <input class="settings-input" type="number" value="${row.day||1}" min="1" max="31" style="width:55px"
+                 onchange="state.settings.recurringIncome[${i}].day=+this.value">
+        </div>
+        <button class="btn btn-red" onclick="removeRecurringIncome(${i})">x</button>
+      </div>`).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">אין הכנסות קבועות</div>';
+  }
+
+  // Recurring expenses
+  const reEl = document.getElementById('recurring-expense-settings');
+  if (reEl) {
+    if (!state.settings.recurringExpenses) state.settings.recurringExpenses = [];
+    reEl.innerHTML = state.settings.recurringExpenses.map((row, i) => `
+      <div class="settings-row" style="gap:6px;flex-wrap:wrap">
+        <input class="form-input" style="flex:1;min-width:100px;font-size:13px" value="${row.label}"
+               onchange="state.settings.recurringExpenses[${i}].label=this.value" placeholder="תיאור">
+        <select class="form-select" style="width:130px;font-size:11px"
+                onchange="state.settings.recurringExpenses[${i}].cat=this.value">
+          ${DEFAULT_CATEGORIES.filter(c=>c!=='הכנסה').map(c=>`<option value="${c}" ${c===row.cat?'selected':''}>${c}</option>`).join('')}
+        </select>
+        <input class="settings-input" type="number" value="${row.amount||0}" min="0" style="width:90px"
+               onchange="state.settings.recurringExpenses[${i}].amount=+this.value">
+        <div style="display:flex;align-items:center;gap:4px;font-size:13px">
+          <span style="color:var(--muted)">יום</span>
+          <input class="settings-input" type="number" value="${row.day||1}" min="1" max="31" style="width:55px"
+                 onchange="state.settings.recurringExpenses[${i}].day=+this.value">
+        </div>
+        <button class="btn btn-red" onclick="removeRecurringExpense(${i})">x</button>
+      </div>`).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">אין הוצאות קבועות</div>';
+  }
+
+  // Income (for budget calc)
   const incEl = document.getElementById('income-settings');
-  incEl.innerHTML = state.settings.income.map((row, i) => `
+  if (incEl) incEl.innerHTML = state.settings.income.map((row, i) => `
     <div class="settings-row">
       <span class="settings-label">${row.label}</span>
       <input class="settings-input" type="number" value="${row.amount||0}" min="0"
@@ -1469,6 +1522,28 @@ function addFixedExpense() {
   renderFixedSettings();
 }
 
+function addRecurringIncome() {
+  if (!state.settings.recurringIncome) state.settings.recurringIncome = [];
+  state.settings.recurringIncome.push({ label: '', amount: 0, day: 10 });
+  renderSettings();
+}
+
+function addRecurringExpense() {
+  if (!state.settings.recurringExpenses) state.settings.recurringExpenses = [];
+  state.settings.recurringExpenses.push({ label: '', cat: '⚡ הוצאות קבועות', amount: 0, day: 1 });
+  renderSettings();
+}
+
+function removeRecurringIncome(i) {
+  state.settings.recurringIncome.splice(i, 1);
+  renderSettings();
+}
+
+function removeRecurringExpense(i) {
+  state.settings.recurringExpenses.splice(i, 1);
+  renderSettings();
+}
+
 function removeFixed(i) {
   state.settings.fixedExpenses.splice(i, 1);
   renderFixedSettings();
@@ -1483,7 +1558,54 @@ function updatePctTotal() {
   }
 }
 
-function saveSettings() { save(); toast('✅ ההגדרות נשמרו'); renderDashboard(); }
+function saveSettings() {
+  // Sync recurring income for current month
+  applyRecurringForMonth(new Date().getFullYear(), new Date().getMonth());
+  save();
+  toast('הגדרות נשמרו — עסקאות קבועות עודכנו');
+  renderDashboard();
+}
+
+function applyRecurringForMonth(year, month) {
+  // Remove old auto-generated recurring for this month
+  state.transactions = state.transactions.filter(t => !t._recurring ||
+    !(new Date(t.date).getFullYear() === year && new Date(t.date).getMonth() === month));
+
+  const pad = n => String(n).padStart(2,'0');
+
+  // Add recurring income
+  (state.settings.recurringIncome || []).forEach(r => {
+    if (!r.label || !r.amount) return;
+    const day = Math.min(r.day || 10, 28);
+    const date = `${year}-${pad(month+1)}-${pad(day)}`;
+    state.transactions.push({
+      id: Date.now() + Math.random(),
+      date, desc: r.label, cat: 'הכנסה',
+      amount: r.amount, type: 'income',
+      payment: 'העברה בנקאית', _recurring: true
+    });
+  });
+
+  // Add recurring expenses
+  (state.settings.recurringExpenses || []).forEach(r => {
+    if (!r.label || !r.amount) return;
+    const day = Math.min(r.day || 1, 28);
+    const date = `${year}-${pad(month+1)}-${pad(day)}`;
+    state.transactions.push({
+      id: Date.now() + Math.random(),
+      date, desc: r.label, cat: r.cat || '⚡ הוצאות קבועות',
+      amount: r.amount, type: 'expense',
+      payment: 'הוראת קבע', _recurring: true
+    });
+  });
+}
+
+function applyAllRecurring() {
+  const now = new Date();
+  for (let m = 0; m <= now.getMonth(); m++) {
+    applyRecurringForMonth(now.getFullYear(), m);
+  }
+}
 
 // ══ EXPORT / IMPORT ──────────────────────────────────────────
 function exportJSON() {
@@ -1530,6 +1652,7 @@ function clearAll() {
 // ══ INIT ─────────────────────────────────────────────────────
 window.addEventListener("load", function() {
   load();
+  applyAllRecurring();
   setTodayDate();
   populateCatSelects();
   renderDashboard();
