@@ -12,26 +12,25 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="הכסף שלי">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
-
 :root {
-–navy:   #0f1b2d;
-–navy2:  #1a2e4a;
-–blue:   #2563eb;
-–blue2:  #3b82f6;
-–teal:   #0d9488;
-–green:  #16a34a;
-–red:    #dc2626;
-–amber:  #d97706;
-–gold:   #f59e0b;
-–bg:     #f0f4f8;
-–card:   #ffffff;
-–border: #e2e8f0;
-–text:   #1e293b;
-–muted:  #64748b;
-–yellow: #fef9c3;
+  --navy:   #0f1b2d;
+  --navy2:  #1a2e4a;
+  --blue:   #2563eb;
+  --blue2:  #3b82f6;
+  --teal:   #0d9488;
+  --green:  #16a34a;
+  --red:    #dc2626;
+  --amber:  #d97706;
+  --gold:   #f59e0b;
+  --bg:     #f0f4f8;
+  --card:   #ffffff;
+  --border: #e2e8f0;
+  --text:   #1e293b;
+  --muted:  #64748b;
+  --yellow: #fef9c3;
 }
 
 - { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1175,11 +1174,12 @@ function parseSheetRows(data) {
   let headerIdx = 0;
   for (let i = 0; i < Math.min(10, data.length); i++) {
     const row = data[i].map(c => String(c).toLowerCase());
-    if (row.some(c => c.includes('תאריך') || c.includes('date') || c.includes('פעולה'))) {
+    if (row.some(c => c.includes('תאריך') || c.includes('date') || c.includes('פעולה') || c.includes('בית עסק'))) {
       headerIdx = i; break;
     }
   }
-  const headers = data[headerIdx].map(c => String(c).trim().toLowerCase());
+  // Normalize headers — remove newlines and extra spaces (כאל uses \n in headers)
+  const headers = data[headerIdx].map(c => String(c).replace(/\n/g,' ').trim().toLowerCase());
 
   // Map column indices
   const colIdx = (keywords) => {
@@ -1191,11 +1191,11 @@ function parseSheetRows(data) {
   };
 
   const dateCol  = colIdx(['תאריך','date']);
-  const descCol  = colIdx(['פעולה','תיאור','description','עסקה','מוטב','בית עסק']);
+  const descCol  = colIdx(['שם בית עסק','פעולה','תיאור','description','עסקה','מוטב','בית עסק','מוטב']);
   const amtCol   = colIdx(['סכום','amount','חובה','זכות','credit','debit']);
-  const typeCol  = colIdx(['סוג','type']);
+  const typeCol  = colIdx(['סוג','type','זיכוי']);
   const debitCol = colIdx(['חובה','debit']);
-  const creditCol= colIdx(['זכות','credit']);
+  const creditCol= colIdx(['זכות','credit','זיכוי']);
 
   const rows = [];
   for (let i = headerIdx + 1; i < data.length; i++) {
@@ -1235,7 +1235,9 @@ function parseSheetRows(data) {
       amount = Math.abs(parseFloat(raw) || 0);
       if (!amount) continue;
       const rawType = typeCol >= 0 ? String(row[typeCol]) : '';
-      type = rawType.includes('הכנסה') || rawType.includes('credit') ? 'income' : 'expense';
+      // כאל: negative amounts or זיכוי = income
+      const isNegative = parseFloat(String(amtCol >= 0 ? row[amtCol] : row[2] || '0').replace(/[,₪\s]/g,'')) < 0;
+      type = rawType.includes('הכנסה') || rawType.includes('credit') || rawType.includes('זיכוי') || isNegative ? 'income' : 'expense';
     }
 
     rows.push({
@@ -1305,20 +1307,40 @@ function parseCSVFile(file) {
 function autoCategory(desc) {
   const d = desc.toLowerCase();
   const MAP = [
-    [["שופרסל","רמי לוי","victory","ויקטורי","מחסני השוק"], "🛒 מזון וסופר"],
-    [["שוארמה","פיצה","מסעדה","קפה","dunkin","meatshop"], "🍔 אוכל ומסעדות"],
-    [["דלק","סונול","פז","ten","delek"], "🚗 רכב ותחבורה"],
-    [["רכבת","תחבורה","אוטובוס","uber"], "🚗 רכב ותחבורה"],
-    [["סלקום","פרטנר","hot","בזק","012"], "📱 תקשורת"],
-    [["netflix","spotify","apple","google","steam","claude"], "🎬 מנויים דיגיטליים"],
-    [["מכבי","כללית","לאומית","super-pharm","פארם"], "💊 בריאות"],
-    [["zara","h&m","nike","castro","koton","אדידס"], "👗 ביגוד"],
-    [["gym","fitness","ספייס","מוזיאון"], "🏋️ ספורט ופנאי"],
-    [["aliexpress","amazon","ebay","ksp"], "🛍️ קניות אונליין"],
-    [["bit","ביט","העברה","paybox","paypal"], "💸 העברות"],
-    [["ביטוח","מנורה","הראל","מגדל","פניקס"], "⚡ הוצאות קבועות"],
-    [["ריבית","עמלה","קארדאטא","דמי"], "🏦 עמלות בנק"],
-    [["wizz","elal","arkia","ryanair"], "✈️ נסיעות"],
+    // סופרמרקט
+    [["שופרסל","רמי לוי","victory","ויקטורי","מחסני השוק","היינמן","ספיר","יוחננוף","מגה","am:pm"], "🛒 מזון וסופר"],
+    // אוכל ומסעדות
+    [["שוארמה","פיצה","מסעדה","קפה","סטייק","סטקיה","בורגר","סושי","hummus","cafe","restaurant","dunkin","meatshop","זסטי","ארומה","קוקה","נודלס","שניצל","פלאפל"], "🍔 אוכל ומסעדות"],
+    // דלק
+    [["דלק","סונול","פז"," ten ","delek","paz","sonol","תדלוק"], "⛽ דלק"],
+    // רכב ותחבורה
+    [["רכבת","תחבורה","אוטובוס","uber","מוסך","חניון","רשיונות נהיגה","משרד התחבורה","טסט","קנס","רכב"], "🚗 רכב ותחבורה"],
+    // תקשורת
+    [["סלקום","פרטנר","hot","בזק","012","גולן","we4g","airalo"], "📱 תקשורת"],
+    // מנויים דיגיטליים
+    [["netflix","spotify","claude","steam","google","apple.com","disney","youtube","amazon prime","hbo","wolt plus","paypal *apple","paypal *google"], "🎬 מנויים דיגיטליים"],
+    // בריאות
+    [["מכבי","כללית","לאומית","super-pharm","superpharm","בריאות","רופא","דנטל","פארמסי","pharmacy","clinic","רוקח","כללית"], "💊 בריאות"],
+    // ביגוד
+    [["zara","h&m","nike","castro","koton","אדידס","adidas","new balance","puma","golf","renuar","factory54","lc waikiki","fox","newyorker"], "👗 ביגוד"],
+    // ספורט ופנאי
+    [["ספייס","gym","fitness","sport","מוזיאון","בריכה","קרוספיט","crossfit","אינביידרז","invaders"], "🏋️ ספורט ופנאי"],
+    // קניות אונליין
+    [["aliexpress","amazon","ebay","ksp","ivory","bug","next","shein","temu"], "🛍️ קניות אונליין"],
+    // ביטחון וביטוח
+    [["ביטוח","מנורה","הראל","מגדל","פניקס","כלל","איילון"], "🛡️ ביטוח"],
+    // הוצאות קבועות / הוראות קבע
+    [["הוראת קבע","קבע"], "⚡ הוצאות קבועות"],
+    // עמלות בנק
+    [["ריבית","עמלה","קארדאטא","דמי ניהול","דמי כרטיס","מסטרקרד","mastercard fee"], "🏦 עמלות בנק"],
+    // נסיעות
+    [["wizz","elal","arkia","ryanair","booking","airbnb","hotels","agoda","טיסה","מלון"], "✈️ נסיעות"],
+    // חינוך
+    [["רופין","אקדמי","university","college","udemy","coursera","לימוד"], "📚 חינוך"],
+    // העברות
+    [["bit","ביט","paybox","paypal","העברה"], "💸 העברות"],
+    // שירותי בית
+    [["חשמל","מים","גז","ארנונה","ועד בית"], "🏠 דיור / שכירות"],
   ];
   for (const [kws, cat] of MAP) {
     if (kws.some(k => d.includes(k))) return cat;
