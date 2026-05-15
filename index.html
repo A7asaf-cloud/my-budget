@@ -26,7 +26,7 @@
   --red:    #dc2626;
   --amber:  #d97706;
   --gold:   #f59e0b;
-  --bg:     #f0f4f8;
+  --bg:     #f5f6f8;
   --card:   #ffffff;
   --border: #e2e8f0;
   --text:   #1e293b;
@@ -38,7 +38,7 @@
 
 body {
   font-family: 'Heebo', sans-serif;
-  background: var(--bg);
+  background: #f5f6f8;
   color: var(--text);
   min-height: 100vh;
   direction: rtl;
@@ -120,7 +120,7 @@ body {
 .stat-label { font-size: 13px; font-weight: 500; opacity: .8; margin-bottom: 8px; }
 .stat-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
 .stat-sub   { font-size: 12px; opacity: .7; margin-top: 4px; }
-.stat-icon  { position: absolute; left: 16px; top: 16px; font-size: 36px; font-weight: 900; opacity: .2; font-family: Arial, sans-serif; }
+.stat-icon { display:none; }
 
 /* ── 2-COL GRID ── */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
@@ -318,22 +318,29 @@ body {
 .month-selector {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   margin-bottom: 20px;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.month-selector::-webkit-scrollbar { display: none; }
 .month-btn {
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 20px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid #e2e8f0;
   background: #fff;
   font-family: 'Heebo', sans-serif;
   font-size: 13px;
   cursor: pointer;
   transition: all .15s;
-  color: var(--muted);
+  color: #64748b;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .month-btn:hover { border-color: var(--blue); color: var(--blue); }
-.month-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.month-btn.active { background: #0f1b2d; color: #fff; border-color: #0f1b2d; }
 
 /* ── CHART CONTAINER ── */
 .chart-wrap { position: relative; height: 240px; }
@@ -415,25 +422,21 @@ body {
 <!-- Stats -->
 <div class="stats-grid">
   <div class="stat-card income">
-    <div class="stat-icon">₪</div>
     <div class="stat-label">הכנסות החודש</div>
     <div class="stat-value" id="stat-income">₪0</div>
     <div class="stat-sub" id="stat-income-sub"></div>
   </div>
   <div class="stat-card expense">
-    <div class="stat-icon">↓</div>
     <div class="stat-label">הוצאות החודש</div>
     <div class="stat-value" id="stat-expense">₪0</div>
     <div class="stat-sub" id="stat-expense-sub"></div>
   </div>
   <div class="stat-card balance">
-    <div class="stat-icon">+</div>
     <div class="stat-label">יתרה</div>
     <div class="stat-value" id="stat-balance">₪0</div>
     <div class="stat-sub" id="stat-balance-sub"></div>
   </div>
   <div class="stat-card budget">
-    <div class="stat-icon">%</div>
     <div class="stat-label">ניצול תקציב</div>
     <div class="stat-value" id="stat-budget-pct">0%</div>
     <div class="stat-sub" id="stat-budget-sub"></div>
@@ -818,7 +821,7 @@ function renderDashboard() {
   document.getElementById('stat-budget-pct').textContent = pct + '%';
   document.getElementById('stat-income-sub').textContent = `${txs.filter(t=>t.type==='income').length} עסקאות`;
   document.getElementById('stat-expense-sub').textContent = `${txs.filter(t=>t.type==='expense').length} עסקאות`;
-  document.getElementById('stat-balance-sub').textContent = balance >= 0 ? '✅ חיובי' : '⚠️ גירעון';
+  document.getElementById('stat-balance-sub').textContent = balance >= 0 ? '▲ חיובי' : '▼ גירעון';
   document.getElementById('stat-budget-sub').textContent = `מתוך ${fmt(budgetTotal)}`;
 
   renderDonut(txs);
