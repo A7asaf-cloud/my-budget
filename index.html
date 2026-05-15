@@ -17,7 +17,7 @@
 <style>
 :root {
   --navy:   #0f1b2d;
-  color-scheme: light;
+  color-scheme: dark;
   --navy2:  #1a2e4a;
   --blue:   #2563eb;
   --blue2:  #3b82f6;
@@ -26,11 +26,11 @@
   --red:    #dc2626;
   --amber:  #d97706;
   --gold:   #f59e0b;
-  --bg:     #f5f6f8;
-  --card:   #ffffff;
-  --border: #e2e8f0;
-  --text:   #1e293b;
-  --muted:  #64748b;
+  --bg:     #0f1b2d;
+  --card:   #1a2e4a;
+  --border: #2d4a6e;
+  --text:   #e2e8f0;
+  --muted:  #8eaacb;
   --yellow: #fef9c3;
 }
 
@@ -38,7 +38,7 @@
 
 body {
   font-family: 'Heebo', sans-serif;
-  background: #f5f6f8;
+  background: #0f1b2d;
   color: var(--text);
   min-height: 100vh;
   direction: rtl;
@@ -72,7 +72,7 @@ body {
 .nav-tab {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #8eaacb;
   font-family: 'Heebo', sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -149,7 +149,7 @@ body {
 }
 .budget-bar-track {
   height: 8px;
-  background: #e2e8f0;
+  background: #1e3554;
   border-radius: 99px;
   overflow: hidden;
 }
@@ -167,7 +167,7 @@ body {
   align-items: end;
 }
 .form-group { display: flex; flex-direction: column; gap: 4px; }
-.form-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.form-label { font-size: 12px; font-weight: 600; color: #8eaacb; }
 .form-input, .form-select {
   border: 1.5px solid var(--border);
   border-radius: 10px;
@@ -175,7 +175,7 @@ body {
   font-family: 'Heebo', sans-serif;
   font-size: 14px;
   color: var(--text);
-  background: #fff;
+  background: #162540;
   outline: none;
   transition: border-color .15s;
   width: 100%;
@@ -199,7 +199,7 @@ body {
 .btn-green:hover  { background: #15803d; }
 .btn-red    { background: var(--red); color: #fff; font-size: 12px; padding: 6px 12px; }
 .btn-red:hover    { background: #b91c1c; }
-.btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+.btn-outline { background: #1a2e4a; color: #e2e8f0; border: 1.5px solid #2d4a6e; }
 .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
 .btn-amber { background: var(--amber); color: #fff; }
 .btn-amber:hover { background: #b45309; }
@@ -207,7 +207,7 @@ body {
 /* ── TRANSACTIONS TABLE ── */
 .tx-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .tx-table th {
-  background: var(--navy);
+  background: #1a2e4a;
   color: #fff;
   padding: 10px 14px;
   text-align: right;
@@ -218,11 +218,11 @@ body {
 .tx-table th:last-child  { border-radius: 10px 0 0 0; }
 .tx-table td {
   padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #1e3554;
   vertical-align: middle;
 }
-.tx-table tr:hover td { background: #f8fafc; }
-.tx-table tr.income-row td { background: #f0fdf4; }
+.tx-table tr:hover td { background: #162540; }
+.tx-table tr.income-row td { background: #0d2e1a; }
 .tx-row-amount.expense { color: var(--red); font-weight: 700; }
 .tx-row-amount.income  { color: var(--green); font-weight: 700; }
 
@@ -233,15 +233,15 @@ body {
   font-size: 11px;
   font-weight: 700;
 }
-.type-badge.expense { background: #fee2e2; color: var(--red); }
-.type-badge.income  { background: #dcfce7; color: var(--green); }
+.type-badge.expense { background: #3d1515; color: #f87171; }
+.type-badge.income  { background: #0d2e1a; color: #4ade80; }
 
 .cat-badge {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 12px;
-  background: #f1f5f9;
+  background: #1e3554;
   color: #475569;
 }
 
@@ -259,10 +259,10 @@ body {
   padding: 5px 14px;
   font-size: 13px;
   font-family: 'Heebo', sans-serif;
-  background: #fff;
+  background: #1a2e4a;
   cursor: pointer;
   transition: all .15s;
-  color: var(--muted);
+  color: #8eaacb;
 }
 .filter-chip:hover { border-color: var(--blue); color: var(--blue); }
 .filter-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
@@ -275,15 +275,15 @@ body {
   text-align: center;
   cursor: pointer;
   transition: all .2s;
-  background: #fafbfc;
+  background: #162540;
 }
 .drop-zone:hover, .drop-zone.drag-over {
   border-color: var(--blue);
-  background: #eff6ff;
+  background: #1a3a6e;
 }
 .drop-zone-icon { font-size: 48px; margin-bottom: 12px; }
 .drop-zone-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.drop-zone-sub   { font-size: 14px; color: var(--muted); }
+.drop-zone-sub   { font-size: 14px; color: #8eaacb; }
 
 /* ── SETTINGS GRID ── */
 .settings-grid {
@@ -302,7 +302,7 @@ body {
 .settings-row:last-child { border-bottom: none; }
 .settings-label { font-size: 14px; font-weight: 500; }
 .settings-input {
-  border: 1.5px solid var(--border);
+  border: 1.5px solid #2d4a6e;
   border-radius: 8px;
   padding: 7px 12px;
   font-family: 'Heebo', sans-serif;
@@ -329,8 +329,8 @@ body {
 .month-btn {
   padding: 5px 12px;
   border-radius: 20px;
-  border: 1.5px solid #e2e8f0;
-  background: #fff;
+  border: 1.5px solid #2d4a6e;
+  background: #1a2e4a;
   font-family: 'Heebo', sans-serif;
   font-size: 13px;
   cursor: pointer;
@@ -349,7 +349,7 @@ body {
 .empty-state {
   text-align: center;
   padding: 48px 24px;
-  color: var(--muted);
+  color: #8eaacb;
 }
 .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
 
@@ -359,7 +359,7 @@ body {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background: var(--navy);
+  background: #1a2e4a;
   color: #fff;
   padding: 12px 24px;
   border-radius: 12px;
@@ -585,7 +585,7 @@ body {
       <div style="font-size:32px;margin-bottom:8px">⏳</div>
       <div style="font-weight:600">מנתח את ה-PDF...</div>
     </div>
-    <div style="margin-top:12px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.8">
+    <div style="margin-top:12px;padding:12px;background:#162540;border-radius:10px;border:1px solid #2d4a6e;font-size:13px;color:var(--muted);line-height:1.8">
       <strong>איך להוריד PDF מהבנק:</strong><br>
       בנק הפועלים: כניסה לאתר → חשבונות → תנועות → ייצוא PDF<br>
       לאומי: פעולות → הפקת דפי חשבון → PDF<br>
@@ -604,7 +604,7 @@ body {
       <div class="drop-zone-sub">.xlsx, .xls, .csv — ייצוא ישיר מהבנק</div>
       <input type="file" id="xlsx-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleXLSX(this)">
     </div>
-    <div style="margin-top:12px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.8">
+    <div style="margin-top:12px;padding:12px;background:#162540;border-radius:10px;border:1px solid #2d4a6e;font-size:13px;color:var(--muted);line-height:1.8">
       <strong>איך להוריד Excel מהבנק:</strong><br>
       בנק הפועלים: תנועות → ייצוא Excel<br>
       לאומי: תנועות → ייצוא לאקסל<br>
@@ -657,7 +657,7 @@ body {
   <div class="card">
     <div class="section-title">📊 הקצאת תקציב (%)</div>
     <div id="budget-settings"></div>
-    <div style="margin-top:12px;padding:10px;border-radius:10px;background:#f8fafc;font-size:13px;display:flex;justify-content:space-between">
+    <div style="margin-top:12px;padding:10px;border-radius:10px;background:#162540;font-size:13px;display:flex;justify-content:space-between">
       <span>סך אחוזים:</span>
       <span id="pct-total" style="font-weight:700">0%</span>
     </div>
@@ -855,7 +855,7 @@ function renderDonut(txs) {
         <span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:70%">${cat}</span>
         <span style="font-weight:700;color:${color}">₪${Math.round(val).toLocaleString()}</span>
       </div>
-      <div style="height:7px;background:#f1f5f9;border-radius:99px;overflow:hidden">
+      <div style="height:7px;background:#1e3554;border-radius:99px;overflow:hidden">
         <div style="height:100%;width:${pct}%;background:${color};border-radius:99px;transition:width .5s"></div>
       </div>
     </div>`;
@@ -884,7 +884,7 @@ function renderMonthlyChart() {
         <div style="font-size:10px;color:${active?'#2563eb':'#94a3b8'};margin-bottom:2px;font-weight:${active?700:400}">
           ${monthly[i]>0?'₪'+Math.round(monthly[i]/1000)+'K':''}
         </div>
-        <div style="width:100%;height:${h}px;background:${active?'#2563eb':'#bfdbfe'};border-radius:4px 4px 0 0;transition:height .4s"></div>
+        <div style="width:100%;height:${h}px;background:${active?'#3b82f6':'#1e3a5f'};border-radius:4px 4px 0 0;transition:height .4s"></div>
         <div style="font-size:9px;color:${active?'#2563eb':'#94a3b8'};margin-top:3px;font-weight:${active?700:400}">${m.slice(0,3)}</div>
       </div>`;
     }).join('')}
