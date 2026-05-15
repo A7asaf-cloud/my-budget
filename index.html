@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -11,77 +12,77 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="הכסף שלי">
 <link rel="apple-touch-icon" href="icon-192.png">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --navy:   #0f1b2d;
-  --navy2:  #1a2e4a;
-  --blue:   #2563eb;
-  --blue2:  #3b82f6;
-  --teal:   #0d9488;
-  --green:  #16a34a;
-  --red:    #dc2626;
-  --amber:  #d97706;
-  --gold:   #f59e0b;
-  --bg:     #f0f4f8;
-  --card:   #ffffff;
-  --border: #e2e8f0;
-  --text:   #1e293b;
-  --muted:  #64748b;
-  --yellow: #fef9c3;
+–navy:   #0f1b2d;
+–navy2:  #1a2e4a;
+–blue:   #2563eb;
+–blue2:  #3b82f6;
+–teal:   #0d9488;
+–green:  #16a34a;
+–red:    #dc2626;
+–amber:  #d97706;
+–gold:   #f59e0b;
+–bg:     #f0f4f8;
+–card:   #ffffff;
+–border: #e2e8f0;
+–text:   #1e293b;
+–muted:  #64748b;
+–yellow: #fef9c3;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Heebo', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  direction: rtl;
+font-family: ‘Heebo’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+direction: rtl;
 }
 
 /* ── TOP BAR ── */
 .topbar {
-  background: var(--navy);
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 12px #0006;
+background: var(–navy);
+padding: 0 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+height: 60px;
+position: sticky;
+top: 0;
+z-index: 100;
+box-shadow: 0 2px 12px #0006;
 }
 .topbar-logo {
-  font-size: 20px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.5px;
+font-size: 20px;
+font-weight: 800;
+color: #fff;
+letter-spacing: -0.5px;
 }
-.topbar-logo span { color: var(--gold); }
+.topbar-logo span { color: var(–gold); }
 
 .nav-tabs {
-  display: flex;
-  gap: 4px;
+display: flex;
+gap: 4px;
 }
 .nav-tab {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all .18s;
+background: none;
+border: none;
+color: #94a3b8;
+font-family: ‘Heebo’, sans-serif;
+font-size: 14px;
+font-weight: 500;
+padding: 8px 16px;
+border-radius: 8px;
+cursor: pointer;
+transition: all .18s;
 }
 .nav-tab:hover { background: #ffffff18; color: #fff; }
-.nav-tab.active { background: var(--blue); color: #fff; }
+.nav-tab.active { background: var(–blue); color: #fff; }
 
 /* ── MAIN LAYOUT ── */
 .main { padding: 28px 24px; max-width: 1280px; margin: 0 auto; }
@@ -92,25 +93,25 @@ body {
 
 /* ── CARDS ── */
 .card {
-  background: var(--card);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  padding: 20px 24px;
-  box-shadow: 0 1px 4px #0001;
+background: var(–card);
+border-radius: 16px;
+border: 1px solid var(–border);
+padding: 20px 24px;
+box-shadow: 0 1px 4px #0001;
 }
 
 /* ── STAT CARDS ── */
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 16px;
+margin-bottom: 20px;
 }
 .stat-card {
-  border-radius: 16px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+border-radius: 16px;
+padding: 20px;
+position: relative;
+overflow: hidden;
 }
 .stat-card.income  { background: linear-gradient(135deg,#065f46,#047857); color:#fff; }
 .stat-card.expense { background: linear-gradient(135deg,#7f1d1d,#b91c1c); color:#fff; }
@@ -127,243 +128,243 @@ body {
 
 /* ── SECTION TITLE ── */
 .section-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+font-size: 16px;
+font-weight: 700;
+margin-bottom: 16px;
+display: flex;
+align-items: center;
+gap: 8px;
 }
 
 /* ── BUDGET BARS ── */
 .budget-bar-row {
-  margin-bottom: 14px;
+margin-bottom: 14px;
 }
 .budget-bar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-  font-size: 13px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 5px;
+font-size: 13px;
 }
 .budget-bar-track {
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 99px;
-  overflow: hidden;
+height: 8px;
+background: #e2e8f0;
+border-radius: 99px;
+overflow: hidden;
 }
 .budget-bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width .6s cubic-bezier(.4,0,.2,1);
+height: 100%;
+border-radius: 99px;
+transition: width .6s cubic-bezier(.4,0,.2,1);
 }
 
 /* ── QUICK ADD FORM ── */
 .quick-add {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  gap: 10px;
-  align-items: end;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr auto;
+gap: 10px;
+align-items: end;
 }
 .form-group { display: flex; flex-direction: column; gap: 4px; }
-.form-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.form-label { font-size: 12px; font-weight: 600; color: var(–muted); }
 .form-input, .form-select {
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 9px 12px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  color: var(--text);
-  background: #fff;
-  outline: none;
-  transition: border-color .15s;
-  width: 100%;
+border: 1.5px solid var(–border);
+border-radius: 10px;
+padding: 9px 12px;
+font-family: ‘Heebo’, sans-serif;
+font-size: 14px;
+color: var(–text);
+background: #fff;
+outline: none;
+transition: border-color .15s;
+width: 100%;
 }
-.form-input:focus, .form-select:focus { border-color: var(--blue); }
+.form-input:focus, .form-select:focus { border-color: var(–blue); }
 
 .btn {
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .15s;
-  white-space: nowrap;
+border: none;
+border-radius: 10px;
+padding: 10px 20px;
+font-family: ‘Heebo’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+transition: all .15s;
+white-space: nowrap;
 }
-.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary { background: var(–blue); color: #fff; }
 .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
-.btn-green  { background: var(--green); color: #fff; }
+.btn-green  { background: var(–green); color: #fff; }
 .btn-green:hover  { background: #15803d; }
-.btn-red    { background: var(--red); color: #fff; font-size: 12px; padding: 6px 12px; }
+.btn-red    { background: var(–red); color: #fff; font-size: 12px; padding: 6px 12px; }
 .btn-red:hover    { background: #b91c1c; }
-.btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
-.btn-outline:hover { border-color: var(--blue); color: var(--blue); }
-.btn-amber { background: var(--amber); color: #fff; }
+.btn-outline { background: #fff; color: var(–text); border: 1.5px solid var(–border); }
+.btn-outline:hover { border-color: var(–blue); color: var(–blue); }
+.btn-amber { background: var(–amber); color: #fff; }
 .btn-amber:hover { background: #b45309; }
 
 /* ── TRANSACTIONS TABLE ── */
 .tx-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .tx-table th {
-  background: var(--navy);
-  color: #fff;
-  padding: 10px 14px;
-  text-align: right;
-  font-weight: 600;
-  font-size: 13px;
+background: var(–navy);
+color: #fff;
+padding: 10px 14px;
+text-align: right;
+font-weight: 600;
+font-size: 13px;
 }
 .tx-table th:first-child { border-radius: 0 10px 0 0; }
 .tx-table th:last-child  { border-radius: 10px 0 0 0; }
 .tx-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
+padding: 10px 14px;
+border-bottom: 1px solid #f1f5f9;
+vertical-align: middle;
 }
 .tx-table tr:hover td { background: #f8fafc; }
 .tx-table tr.income-row td { background: #f0fdf4; }
-.tx-row-amount.expense { color: var(--red); font-weight: 700; }
-.tx-row-amount.income  { color: var(--green); font-weight: 700; }
+.tx-row-amount.expense { color: var(–red); font-weight: 700; }
+.tx-row-amount.income  { color: var(–green); font-weight: 700; }
 
 .type-badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 700;
+display: inline-block;
+padding: 2px 10px;
+border-radius: 99px;
+font-size: 11px;
+font-weight: 700;
 }
-.type-badge.expense { background: #fee2e2; color: var(--red); }
-.type-badge.income  { background: #dcfce7; color: var(--green); }
+.type-badge.expense { background: #fee2e2; color: var(–red); }
+.type-badge.income  { background: #dcfce7; color: var(–green); }
 
 .cat-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  background: #f1f5f9;
-  color: #475569;
+display: inline-block;
+padding: 2px 8px;
+border-radius: 6px;
+font-size: 12px;
+background: #f1f5f9;
+color: #475569;
 }
 
 /* ── FILTERS ── */
 .filters-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  align-items: center;
+display: flex;
+gap: 10px;
+margin-bottom: 16px;
+flex-wrap: wrap;
+align-items: center;
 }
 .filter-chip {
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 13px;
-  font-family: 'Heebo', sans-serif;
-  background: #fff;
-  cursor: pointer;
-  transition: all .15s;
-  color: var(--muted);
+border: 1.5px solid var(–border);
+border-radius: 20px;
+padding: 5px 14px;
+font-size: 13px;
+font-family: ‘Heebo’, sans-serif;
+background: #fff;
+cursor: pointer;
+transition: all .15s;
+color: var(–muted);
 }
-.filter-chip:hover { border-color: var(--blue); color: var(--blue); }
-.filter-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.filter-chip:hover { border-color: var(–blue); color: var(–blue); }
+.filter-chip.active { background: var(–blue); color: #fff; border-color: var(–blue); }
 
 /* ── CSV IMPORT ── */
 .drop-zone {
-  border: 2.5px dashed #cbd5e1;
-  border-radius: 16px;
-  padding: 48px 32px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .2s;
-  background: #fafbfc;
+border: 2.5px dashed #cbd5e1;
+border-radius: 16px;
+padding: 48px 32px;
+text-align: center;
+cursor: pointer;
+transition: all .2s;
+background: #fafbfc;
 }
 .drop-zone:hover, .drop-zone.drag-over {
-  border-color: var(--blue);
-  background: #eff6ff;
+border-color: var(–blue);
+background: #eff6ff;
 }
 .drop-zone-icon { font-size: 48px; margin-bottom: 12px; }
 .drop-zone-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.drop-zone-sub   { font-size: 14px; color: var(--muted); }
+.drop-zone-sub   { font-size: 14px; color: var(–muted); }
 
 /* ── SETTINGS GRID ── */
 .settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 20px;
 }
 .settings-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  gap: 12px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px 0;
+border-bottom: 1px solid var(–border);
+gap: 12px;
 }
 .settings-row:last-child { border-bottom: none; }
 .settings-label { font-size: 14px; font-weight: 500; }
 .settings-input {
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 12px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  text-align: left;
-  direction: ltr;
-  width: 120px;
-  outline: none;
+border: 1.5px solid var(–border);
+border-radius: 8px;
+padding: 7px 12px;
+font-family: ‘Heebo’, sans-serif;
+font-size: 14px;
+text-align: left;
+direction: ltr;
+width: 120px;
+outline: none;
 }
-.settings-input:focus { border-color: var(--blue); }
+.settings-input:focus { border-color: var(–blue); }
 
 /* ── MONTHLY SELECTOR ── */
 .month-selector {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+display: flex;
+gap: 6px;
+flex-wrap: wrap;
+margin-bottom: 20px;
 }
 .month-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  background: #fff;
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all .15s;
-  color: var(--muted);
+padding: 6px 14px;
+border-radius: 20px;
+border: 1.5px solid var(–border);
+background: #fff;
+font-family: ‘Heebo’, sans-serif;
+font-size: 13px;
+cursor: pointer;
+transition: all .15s;
+color: var(–muted);
 }
-.month-btn:hover { border-color: var(--blue); color: var(--blue); }
-.month-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.month-btn:hover { border-color: var(–blue); color: var(–blue); }
+.month-btn.active { background: var(–navy); color: #fff; border-color: var(–navy); }
 
 /* ── CHART CONTAINER ── */
 .chart-wrap { position: relative; height: 240px; }
 
 /* ── EMPTY STATE ── */
 .empty-state {
-  text-align: center;
-  padding: 48px 24px;
-  color: var(--muted);
+text-align: center;
+padding: 48px 24px;
+color: var(–muted);
 }
 .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
 
 /* ── TOAST ── */
 .toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--navy);
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  z-index: 9999;
-  transition: transform .3s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 8px 24px #0004;
+position: fixed;
+bottom: 24px;
+left: 50%;
+transform: translateX(-50%) translateY(80px);
+background: var(–navy);
+color: #fff;
+padding: 12px 24px;
+border-radius: 12px;
+font-size: 14px;
+font-weight: 600;
+z-index: 9999;
+transition: transform .3s cubic-bezier(.4,0,.2,1);
+box-shadow: 0 8px 24px #0004;
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
-.toast.success { border-right: 4px solid var(--green); }
-.toast.error   { border-right: 4px solid var(--red); }
+.toast.success { border-right: 4px solid var(–green); }
+.toast.error   { border-right: 4px solid var(–red); }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
@@ -372,23 +373,25 @@ body {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .two-col, .three-col { grid-template-columns: 1fr; }
-  .quick-add { grid-template-columns: 1fr 1fr; }
-  .settings-grid { grid-template-columns: 1fr; }
+.stats-grid { grid-template-columns: 1fr 1fr; }
+.two-col, .three-col { grid-template-columns: 1fr; }
+.quick-add { grid-template-columns: 1fr 1fr; }
+.settings-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
-  .stats-grid { grid-template-columns: 1fr; }
-  .quick-add { grid-template-columns: 1fr; }
-  .main { padding: 16px 12px; }
-  .topbar { padding: 0 12px; }
-  .nav-tab span { display: none; }
+.stats-grid { grid-template-columns: 1fr; }
+.quick-add { grid-template-columns: 1fr; }
+.main { padding: 16px 12px; }
+.topbar { padding: 0 12px; }
+.nav-tab span { display: none; }
 }
 </style>
+
 </head>
 <body>
 
 <!-- TOP BAR -->
+
 <div class="topbar">
   <div class="topbar-logo">💰 הכסף <span>שלי</span></div>
   <div class="nav-tabs">
@@ -402,244 +405,289 @@ body {
 <div class="main">
 
   <!-- ══════════════════════════════════════ DASHBOARD ══ -->
+
   <div class="page active" id="page-dashboard">
 
-    <!-- Month selector -->
-    <div class="month-selector" id="month-selector"></div>
+```
+<!-- Month selector -->
+<div class="month-selector" id="month-selector"></div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card income">
-        <div class="stat-icon">💰</div>
-        <div class="stat-label">הכנסות החודש</div>
-        <div class="stat-value" id="stat-income">₪0</div>
-        <div class="stat-sub" id="stat-income-sub"></div>
-      </div>
-      <div class="stat-card expense">
-        <div class="stat-icon">💸</div>
-        <div class="stat-label">הוצאות החודש</div>
-        <div class="stat-value" id="stat-expense">₪0</div>
-        <div class="stat-sub" id="stat-expense-sub"></div>
-      </div>
-      <div class="stat-card balance">
-        <div class="stat-icon">📈</div>
-        <div class="stat-label">יתרה</div>
-        <div class="stat-value" id="stat-balance">₪0</div>
-        <div class="stat-sub" id="stat-balance-sub"></div>
-      </div>
-      <div class="stat-card budget">
-        <div class="stat-icon">🎯</div>
-        <div class="stat-label">ניצול תקציב</div>
-        <div class="stat-value" id="stat-budget-pct">0%</div>
-        <div class="stat-sub" id="stat-budget-sub"></div>
-      </div>
-    </div>
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card income">
+    <div class="stat-icon">💰</div>
+    <div class="stat-label">הכנסות החודש</div>
+    <div class="stat-value" id="stat-income">₪0</div>
+    <div class="stat-sub" id="stat-income-sub"></div>
+  </div>
+  <div class="stat-card expense">
+    <div class="stat-icon">💸</div>
+    <div class="stat-label">הוצאות החודש</div>
+    <div class="stat-value" id="stat-expense">₪0</div>
+    <div class="stat-sub" id="stat-expense-sub"></div>
+  </div>
+  <div class="stat-card balance">
+    <div class="stat-icon">📈</div>
+    <div class="stat-label">יתרה</div>
+    <div class="stat-value" id="stat-balance">₪0</div>
+    <div class="stat-sub" id="stat-balance-sub"></div>
+  </div>
+  <div class="stat-card budget">
+    <div class="stat-icon">🎯</div>
+    <div class="stat-label">ניצול תקציב</div>
+    <div class="stat-value" id="stat-budget-pct">0%</div>
+    <div class="stat-sub" id="stat-budget-sub"></div>
+  </div>
+</div>
 
-    <!-- Charts + Budget Bars -->
-    <div class="two-col">
-      <div class="card">
-        <div class="section-title">📊 הוצאות לפי קטגוריה</div>
-        <div class="chart-wrap">
-          <canvas id="chart-donut"></canvas>
-        </div>
-      </div>
-      <div class="card">
-        <div class="section-title">📅 הוצאות לפי חודש</div>
-        <div class="chart-wrap">
-          <canvas id="chart-monthly"></canvas>
-        </div>
-      </div>
+<!-- Charts + Budget Bars -->
+<div class="two-col">
+  <div class="card">
+    <div class="section-title">📊 הוצאות לפי קטגוריה</div>
+    <div class="chart-wrap">
+      <canvas id="chart-donut"></canvas>
     </div>
+  </div>
+  <div class="card">
+    <div class="section-title">📅 הוצאות לפי חודש</div>
+    <div class="chart-wrap">
+      <canvas id="chart-monthly"></canvas>
+    </div>
+  </div>
+</div>
 
-    <!-- Budget bars -->
-    <div class="card" style="margin-bottom:20px">
-      <div class="section-title">🎯 ניצול תקציב לפי קטגוריה</div>
-      <div id="budget-bars"></div>
-    </div>
+<!-- Budget bars -->
+<div class="card" style="margin-bottom:20px">
+  <div class="section-title">🎯 ניצול תקציב לפי קטגוריה</div>
+  <div id="budget-bars"></div>
+</div>
 
-    <!-- Recent transactions -->
-    <div class="card">
-      <div class="section-title" style="justify-content:space-between">
-        <span>🕐 עסקאות אחרונות</span>
-        <button class="btn btn-outline" style="font-size:13px;padding:6px 14px" onclick="showPage('transactions')">הצג הכל</button>
-      </div>
-      <div id="recent-tx"></div>
-    </div>
+<!-- Recent transactions -->
+<div class="card">
+  <div class="section-title" style="justify-content:space-between">
+    <span>🕐 עסקאות אחרונות</span>
+    <button class="btn btn-outline" style="font-size:13px;padding:6px 14px" onclick="showPage('transactions')">הצג הכל</button>
+  </div>
+  <div id="recent-tx"></div>
+</div>
+```
 
   </div>
 
   <!-- ══════════════════════════════════════ TRANSACTIONS ══ -->
+
   <div class="page" id="page-transactions">
 
-    <!-- Quick add -->
-    <div class="card" style="margin-bottom:20px">
-      <div class="section-title">➕ הוספת עסקה</div>
-      <div class="quick-add">
-        <div class="form-group">
-          <label class="form-label">תאריך</label>
-          <input type="date" class="form-input" id="tx-date">
-        </div>
-        <div class="form-group">
-          <label class="form-label">תיאור</label>
-          <input type="text" class="form-input" id="tx-desc" placeholder="לדוגמה: סופרמרקט שופרסל">
-        </div>
-        <div class="form-group">
-          <label class="form-label">קטגוריה</label>
-          <select class="form-select" id="tx-cat"></select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">סכום (₪)</label>
-          <input type="number" class="form-input" id="tx-amount" placeholder="0" min="0" step="0.01">
-        </div>
-        <div class="form-group">
-          <label class="form-label">סוג</label>
-          <select class="form-select" id="tx-type">
-            <option value="expense">הוצאה</option>
-            <option value="income">הכנסה</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">אמצעי תשלום</label>
-          <select class="form-select" id="tx-payment">
-            <option>מזומן</option>
-            <option>אשראי</option>
-            <option>העברה בנקאית</option>
-            <option>ביט/פייבוקס</option>
-          </select>
-        </div>
-        <div class="form-group" style="justify-content:flex-end">
-          <button class="btn btn-primary" onclick="addTransaction()" style="height:40px">הוסף ✓</button>
-        </div>
-      </div>
+```
+<!-- Quick add -->
+<div class="card" style="margin-bottom:20px">
+  <div class="section-title">➕ הוספת עסקה</div>
+  <div class="quick-add">
+    <div class="form-group">
+      <label class="form-label">תאריך</label>
+      <input type="date" class="form-input" id="tx-date">
     </div>
-
-    <!-- Filters -->
-    <div class="filters-row">
-      <div class="filter-chip active" onclick="filterType(this,'all')">הכל</div>
-      <div class="filter-chip" onclick="filterType(this,'expense')">הוצאות</div>
-      <div class="filter-chip" onclick="filterType(this,'income')">הכנסות</div>
-      <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-cat" onchange="renderTxTable()">
-        <option value="">כל הקטגוריות</option>
+    <div class="form-group">
+      <label class="form-label">תיאור</label>
+      <input type="text" class="form-input" id="tx-desc" placeholder="לדוגמה: סופרמרקט שופרסל">
+    </div>
+    <div class="form-group">
+      <label class="form-label">קטגוריה</label>
+      <select class="form-select" id="tx-cat"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">סכום (₪)</label>
+      <input type="number" class="form-input" id="tx-amount" placeholder="0" min="0" step="0.01">
+    </div>
+    <div class="form-group">
+      <label class="form-label">סוג</label>
+      <select class="form-select" id="tx-type">
+        <option value="expense">הוצאה</option>
+        <option value="income">הכנסה</option>
       </select>
-      <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-month" onchange="renderTxTable()">
-        <option value="">כל החודשים</option>
+    </div>
+    <div class="form-group">
+      <label class="form-label">אמצעי תשלום</label>
+      <select class="form-select" id="tx-payment">
+        <option>מזומן</option>
+        <option>אשראי</option>
+        <option>העברה בנקאית</option>
+        <option>ביט/פייבוקס</option>
       </select>
-      <input type="text" class="form-input" style="width:200px" id="filter-search" placeholder="🔍 חיפוש..." oninput="renderTxTable()">
-      <button class="btn btn-red" onclick="clearAllTransactions()">מחק הכל</button>
     </div>
+    <div class="form-group" style="justify-content:flex-end">
+      <button class="btn btn-primary" onclick="addTransaction()" style="height:40px">הוסף ✓</button>
+    </div>
+  </div>
+</div>
 
-    <!-- Table -->
-    <div class="card" style="overflow-x:auto">
-      <table class="tx-table" id="tx-table">
-        <thead>
-          <tr>
-            <th>תאריך</th>
-            <th>תיאור</th>
-            <th>קטגוריה</th>
-            <th>סכום</th>
-            <th>סוג</th>
-            <th>תשלום</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="tx-tbody"></tbody>
-      </table>
-    </div>
+<!-- Filters -->
+<div class="filters-row">
+  <div class="filter-chip active" onclick="filterType(this,'all')">הכל</div>
+  <div class="filter-chip" onclick="filterType(this,'expense')">הוצאות</div>
+  <div class="filter-chip" onclick="filterType(this,'income')">הכנסות</div>
+  <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-cat" onchange="renderTxTable()">
+    <option value="">כל הקטגוריות</option>
+  </select>
+  <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-month" onchange="renderTxTable()">
+    <option value="">כל החודשים</option>
+  </select>
+  <input type="text" class="form-input" style="width:200px" id="filter-search" placeholder="🔍 חיפוש..." oninput="renderTxTable()">
+  <button class="btn btn-red" onclick="clearAllTransactions()">מחק הכל</button>
+</div>
+
+<!-- Table -->
+<div class="card" style="overflow-x:auto">
+  <table class="tx-table" id="tx-table">
+    <thead>
+      <tr>
+        <th>תאריך</th>
+        <th>תיאור</th>
+        <th>קטגוריה</th>
+        <th>סכום</th>
+        <th>סוג</th>
+        <th>תשלום</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tx-tbody"></tbody>
+  </table>
+</div>
+```
 
   </div>
 
   <!-- ══════════════════════════════════════ IMPORT ══ -->
+
   <div class="page" id="page-import">
-    <div class="card" style="margin-bottom:20px">
-      <div class="section-title">📥 ייבוא עסקאות מ-CSV</div>
 
-      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('csv-file').click()">
-        <div class="drop-zone-icon">📂</div>
-        <div class="drop-zone-title">גרור קובץ CSV לכאן</div>
-        <div class="drop-zone-sub">או לחץ לבחירת קובץ מהמחשב</div>
-        <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="handleCSV(this)">
-      </div>
+```
+<!-- Tabs -->
+<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+  <button class="filter-chip active" id="tab-pdf" onclick="switchImportTab('pdf')">📄 PDF מהבנק</button>
+  <button class="filter-chip" id="tab-xlsx" onclick="switchImportTab('xlsx')">📊 Excel / CSV</button>
+</div>
 
-      <div style="margin-top:20px;padding:16px;background:#f8fafc;border-radius:12px;border:1px solid var(--border)">
-        <div style="font-size:14px;font-weight:700;margin-bottom:10px">📋 פורמט CSV נתמך:</div>
-        <div style="font-size:13px;color:var(--muted);line-height:2">
-          <strong>עמודות נדרשות:</strong> תאריך, תיאור, סכום<br>
-          <strong>עמודות אופציונליות:</strong> קטגוריה, סוג (הכנסה/הוצאה), תשלום<br>
-          <strong>פורמט תאריך:</strong> DD/MM/YYYY או YYYY-MM-DD<br>
-          <strong>דוגמה:</strong> <code>01/01/2025,שופרסל,245.50,🛒 מזון וסופר,הוצאה,אשראי</code>
-        </div>
-      </div>
-
-      <div style="margin-top:16px">
-        <button class="btn btn-outline" onclick="downloadSampleCSV()">⬇️ הורד CSV לדוגמה</button>
-      </div>
+<!-- PDF tab -->
+<div id="import-tab-pdf">
+  <div class="card" style="margin-bottom:16px">
+    <div class="section-title">📄 ייבוא PDF מהבנק</div>
+    <div class="drop-zone" onclick="document.getElementById('pdf-file').click()">
+      <div class="drop-zone-icon">🏦</div>
+      <div class="drop-zone-title">העלה PDF מהבנק</div>
+      <div class="drop-zone-sub">בנק הפועלים, לאומי, דיסקונט, מזרחי</div>
+      <input type="file" id="pdf-file" accept=".pdf" style="display:none" onchange="handlePDF(this)">
     </div>
-
-    <div id="import-preview" style="display:none">
-      <div class="card">
-        <div class="section-title" id="import-title">תצוגה מקדימה</div>
-        <div style="overflow-x:auto">
-          <table class="tx-table" id="preview-table">
-            <thead>
-              <tr><th>תאריך</th><th>תיאור</th><th>קטגוריה</th><th>סכום</th><th>סוג</th><th>תשלום</th><th>
-                <input type="checkbox" id="select-all-import" onchange="toggleAllImport(this)" checked>
-              </th></tr>
-            </thead>
-            <tbody id="preview-tbody"></tbody>
-          </table>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:10px">
-          <button class="btn btn-primary" onclick="confirmImport()">✅ ייבא עסקאות מסומנות</button>
-          <button class="btn btn-outline" onclick="cancelImport()">ביטול</button>
-        </div>
-      </div>
+    <div id="pdf-loading" style="display:none;text-align:center;padding:24px">
+      <div style="font-size:32px;margin-bottom:8px">⏳</div>
+      <div style="font-weight:600">מנתח את ה-PDF...</div>
+    </div>
+    <div style="margin-top:12px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.8">
+      <strong>איך להוריד PDF מהבנק:</strong><br>
+      בנק הפועלים: כניסה לאתר → חשבונות → תנועות → ייצוא PDF<br>
+      לאומי: פעולות → הפקת דפי חשבון → PDF<br>
+      דיסקונט: חשבון עו"ש → תנועות → הדפסה/PDF
     </div>
   </div>
+</div>
 
-  <!-- ══════════════════════════════════════ SETTINGS ══ -->
+<!-- Excel/CSV tab -->
+<div id="import-tab-xlsx" style="display:none">
+  <div class="card" style="margin-bottom:16px">
+    <div class="section-title">📊 ייבוא Excel / CSV</div>
+    <div class="drop-zone" onclick="document.getElementById('xlsx-file').click()">
+      <div class="drop-zone-icon">📂</div>
+      <div class="drop-zone-title">העלה קובץ Excel או CSV</div>
+      <div class="drop-zone-sub">.xlsx, .xls, .csv — ייצוא ישיר מהבנק</div>
+      <input type="file" id="xlsx-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleXLSX(this)">
+    </div>
+    <div style="margin-top:12px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.8">
+      <strong>איך להוריד Excel מהבנק:</strong><br>
+      בנק הפועלים: תנועות → ייצוא Excel<br>
+      לאומי: תנועות → ייצוא לאקסל<br>
+      כרטיס אשראי (כאל/מקס/ויזה): אתר החברה → עסקאות → ייצוא Excel<br>
+      <span style="color:var(--blue)">💡 CSV עובד גם ישירות מהורדות הבנק</span>
+    </div>
+    <div style="margin-top:10px">
+      <button class="btn btn-outline" onclick="downloadSampleCSV()">⬇️ הורד CSV לדוגמה</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preview (shared) -->
+<div id="import-preview" style="display:none">
+  <div class="card">
+    <div class="section-title" id="import-title">תצוגה מקדימה</div>
+    <div style="overflow-x:auto">
+      <table class="tx-table">
+        <thead>
+          <tr><th>תאריך</th><th>תיאור</th><th>קטגוריה</th><th>סכום</th><th>סוג</th><th>תשלום</th>
+          <th><input type="checkbox" id="select-all-import" onchange="toggleAllImport(this)" checked></th></tr>
+        </thead>
+        <tbody id="preview-tbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="confirmImport()">✅ ייבא עסקאות מסומנות</button>
+      <button class="btn btn-outline" onclick="cancelImport()">ביטול</button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+```
+<!-- ══════════════════════════════════════ SETTINGS ══ -->
+```
+
   <div class="page" id="page-settings">
     <div class="settings-grid">
 
-      <div class="card">
-        <div class="section-title">💼 הכנסות</div>
-        <div id="income-settings"></div>
-        <button class="btn btn-outline" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
-      </div>
+```
+  <div class="card">
+    <div class="section-title">💼 הכנסות</div>
+    <div id="income-settings"></div>
+    <button class="btn btn-outline" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
+  </div>
 
-      <div class="card">
-        <div class="section-title">📊 הקצאת תקציב (%)</div>
-        <div id="budget-settings"></div>
-        <div style="margin-top:12px;padding:10px;border-radius:10px;background:#f8fafc;font-size:13px;display:flex;justify-content:space-between">
-          <span>סך אחוזים:</span>
-          <span id="pct-total" style="font-weight:700">0%</span>
-        </div>
-        <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
-      </div>
-
-      <div class="card">
-        <div class="section-title">📌 הוצאות קבועות</div>
-        <div id="fixed-settings"></div>
-        <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addFixedExpense()">+ הוסף הוצאה קבועה</button>
-        <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
-      </div>
-
-      <div class="card">
-        <div class="section-title">🗂️ ניהול נתונים</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <button class="btn btn-outline" onclick="exportJSON()">📤 ייצוא נתונים (JSON)</button>
-          <button class="btn btn-outline" onclick="exportCSV()">📤 ייצוא נתונים (CSV)</button>
-          <button class="btn btn-outline" onclick="document.getElementById('import-json').click()">📥 ייבוא נתונים (JSON)</button>
-          <input type="file" id="import-json" accept=".json" style="display:none" onchange="importJSON(this)">
-          <button class="btn btn-red" onclick="if(confirm('למחוק את כל הנתונים?'))clearAll()">🗑️ מחיקת כל הנתונים</button>
-        </div>
-      </div>
-
+  <div class="card">
+    <div class="section-title">📊 הקצאת תקציב (%)</div>
+    <div id="budget-settings"></div>
+    <div style="margin-top:12px;padding:10px;border-radius:10px;background:#f8fafc;font-size:13px;display:flex;justify-content:space-between">
+      <span>סך אחוזים:</span>
+      <span id="pct-total" style="font-weight:700">0%</span>
     </div>
+    <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">📌 הוצאות קבועות</div>
+    <div id="fixed-settings"></div>
+    <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addFixedExpense()">+ הוסף הוצאה קבועה</button>
+    <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">🗂️ ניהול נתונים</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-outline" onclick="exportJSON()">📤 ייצוא נתונים (JSON)</button>
+      <button class="btn btn-outline" onclick="exportCSV()">📤 ייצוא נתונים (CSV)</button>
+      <button class="btn btn-outline" onclick="document.getElementById('import-json').click()">📥 ייבוא נתונים (JSON)</button>
+      <input type="file" id="import-json" accept=".json" style="display:none" onchange="importJSON(this)">
+      <button class="btn btn-red" onclick="if(confirm('למחוק את כל הנתונים?'))clearAll()">🗑️ מחיקת כל הנתונים</button>
+    </div>
+  </div>
+
+</div>
+```
+
   </div>
 
 </div>
 
 <!-- TOAST -->
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -781,6 +829,7 @@ function renderDashboard() {
 }
 
 function renderDonut(txs) {
+  if (typeof Chart === "undefined") return;
   const expenses = txs.filter(t => t.type==='expense');
   const bycat = {};
   expenses.forEach(t => { bycat[t.cat] = (bycat[t.cat]||0) + (+t.amount||0); });
@@ -803,6 +852,7 @@ function renderDonut(txs) {
 }
 
 function renderMonthlyChart() {
+  if (typeof Chart === "undefined") return;
   const monthly = MONTHS.map((m, i) => {
     const txs = txForMonth(i);
     return txs.filter(t=>t.type==='expense').reduce((s,t)=>s+(+t.amount||0),0);
@@ -973,6 +1023,233 @@ function clearAllTransactions() {
   state.transactions = [];
   save(); renderTxTable();
   toast('כל העסקאות נמחקו');
+}
+
+
+// ══ IMPORT TABS ──────────────────────────────────────────────
+function switchImportTab(tab) {
+  ['pdf','xlsx'].forEach(t => {
+    document.getElementById('import-tab-'+t).style.display = t===tab ? 'block' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  document.getElementById('import-preview').style.display = 'none';
+}
+
+// ══ PDF PARSER (local, no API) ────────────────────────────────
+async function handlePDF(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('pdf-loading').style.display = 'block';
+  try {
+    const text = await extractPDFText(file);
+    const rows = parseBankText(text);
+    document.getElementById('pdf-loading').style.display = 'none';
+    if (rows.length) { importRows = rows; renderImportPreview(); }
+    else { toast('לא נמצאו עסקאות — נסה להוריד CSV מהבנק', 'error'); }
+  } catch(e) {
+    document.getElementById('pdf-loading').style.display = 'none';
+    toast('שגיאה בקריאת PDF: ' + e.message, 'error');
+  }
+  input.value = '';
+}
+
+async function extractPDFText(file) {
+  // Use PDF.js from CDN
+  if (!window.pdfjsLib) {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    // Sort items by y then x for RTL row reconstruction
+    const items = content.items.slice().sort((a,b) => {
+      const dy = Math.round(b.transform[5]) - Math.round(a.transform[5]);
+      return dy !== 0 ? dy : a.transform[4] - b.transform[4];
+    });
+    let lastY = null;
+    for (const item of items) {
+      const y = Math.round(item.transform[5]);
+      if (lastY !== null && Math.abs(y - lastY) > 3) fullText += '\n';
+      fullText += item.str + ' ';
+      lastY = y;
+    }
+    fullText += '\n---PAGE---\n';
+  }
+  return fullText;
+}
+
+function parseBankText(text) {
+  const rows = [];
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+  // Israeli date pattern DD/MM/YYYY
+  const dateRe = /(\d{2}\/\d{2}\/\d{4})/;
+  // Amount pattern: digits with optional comma/dot
+  const amtRe  = /(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/g;
+
+  for (const line of lines) {
+    if (!dateRe.test(line)) continue;
+    const dateMatch = line.match(dateRe);
+    if (!dateMatch) continue;
+
+    const [d, m, y] = dateMatch[1].split('/');
+    const isoDate = `${y}-${m}-${d}`;
+
+    // Extract all amounts from line
+    const amounts = [];
+    let am;
+    const amtReCopy = new RegExp(amtRe.source, 'g');
+    while ((am = amtReCopy.exec(line)) !== null) {
+      const val = parseFloat(am[1].replace(/,/g, ''));
+      if (val > 0) amounts.push(val);
+    }
+    if (!amounts.length) continue;
+
+    // Description: text between date and first number
+    const afterDate = line.slice(line.indexOf(dateMatch[1]) + dateMatch[1].length).trim();
+    const descMatch = afterDate.match(/^([^\d]+)/);
+    let desc = descMatch ? descMatch[1].trim() : afterDate.slice(0, 30).trim();
+    desc = desc.replace(/[\s]+/g, ' ').trim();
+    if (!desc || desc.length < 2) continue;
+
+    // Determine type: look for keywords
+    const isIncome = /זיכוי|הכנסה|משכורת|העברה.*זכות|מענק|החזר|זכות/i.test(desc) ||
+                     /אס\.קיו\.לינק|ב\.ז הפצה|העברה\/הפקדה/i.test(desc);
+
+    const amount = amounts[0];
+    const cat = autoCategory(desc);
+
+    rows.push({
+      id: Date.now() + rows.length,
+      date: isoDate,
+      desc,
+      cat: isIncome ? 'הכנסה' : cat,
+      amount,
+      type: isIncome ? 'income' : 'expense',
+      payment: 'העברה בנקאית',
+      _selected: true
+    });
+  }
+  return rows;
+}
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+// ══ EXCEL / CSV IMPORT ────────────────────────────────────────
+async function handleXLSX(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'csv') { handleCSV(input); return; }
+
+  // Load SheetJS for xlsx/xls
+  if (!window.XLSX) {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+  }
+  const ab = await file.arrayBuffer();
+  const wb = window.XLSX.read(ab, { type: 'array', cellDates: true });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const data = window.XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+  // Try to detect header row and columns
+  const rows = parseSheetRows(data);
+  if (rows.length) { importRows = rows; renderImportPreview(); toast('נטענו ' + rows.length + ' עסקאות'); }
+  else toast('לא נמצאו עסקאות בקובץ — בדוק את הפורמט', 'error');
+  input.value = '';
+}
+
+function parseSheetRows(data) {
+  if (!data.length) return [];
+  // Find header row (contains date/תאריך or amount/סכום)
+  let headerIdx = 0;
+  for (let i = 0; i < Math.min(10, data.length); i++) {
+    const row = data[i].map(c => String(c).toLowerCase());
+    if (row.some(c => c.includes('תאריך') || c.includes('date') || c.includes('פעולה'))) {
+      headerIdx = i; break;
+    }
+  }
+  const headers = data[headerIdx].map(c => String(c).trim().toLowerCase());
+
+  // Map column indices
+  const colIdx = (keywords) => {
+    for (const kw of keywords) {
+      const i = headers.findIndex(h => h.includes(kw));
+      if (i >= 0) return i;
+    }
+    return -1;
+  };
+
+  const dateCol  = colIdx(['תאריך','date']);
+  const descCol  = colIdx(['פעולה','תיאור','description','עסקה','מוטב','בית עסק']);
+  const amtCol   = colIdx(['סכום','amount','חובה','זכות','credit','debit']);
+  const typeCol  = colIdx(['סוג','type']);
+  const debitCol = colIdx(['חובה','debit']);
+  const creditCol= colIdx(['זכות','credit']);
+
+  const rows = [];
+  for (let i = headerIdx + 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row || row.every(c => !c)) continue;
+
+    // Date
+    let rawDate = dateCol >= 0 ? row[dateCol] : row[0];
+    let isoDate = '';
+    if (rawDate instanceof Date) {
+      isoDate = rawDate.toISOString().split('T')[0];
+    } else {
+      rawDate = String(rawDate).trim();
+      if (/\d{2}\/\d{2}\/\d{4}/.test(rawDate)) {
+        const [d,m,y] = rawDate.split('/');
+        isoDate = `${y}-${m}-${d}`;
+      } else if (/\d{4}-\d{2}-\d{2}/.test(rawDate)) {
+        isoDate = rawDate;
+      } else continue;
+    }
+
+    // Description
+    const desc = String(descCol >= 0 ? row[descCol] : row[1] || '').trim();
+    if (!desc) continue;
+
+    // Amount — handle separate debit/credit columns
+    let amount = 0;
+    let type = 'expense';
+    if (debitCol >= 0 && creditCol >= 0) {
+      const debit  = parseFloat(String(row[debitCol] ||'').replace(/[,₪]/g,'')) || 0;
+      const credit = parseFloat(String(row[creditCol]||'').replace(/[,₪]/g,'')) || 0;
+      if (credit > 0) { amount = credit; type = 'income'; }
+      else if (debit > 0) { amount = debit; type = 'expense'; }
+      else continue;
+    } else {
+      const raw = String(amtCol >= 0 ? row[amtCol] : row[2] || '').replace(/[,₪\s]/g,'');
+      amount = Math.abs(parseFloat(raw) || 0);
+      if (!amount) continue;
+      const rawType = typeCol >= 0 ? String(row[typeCol]) : '';
+      type = rawType.includes('הכנסה') || rawType.includes('credit') ? 'income' : 'expense';
+    }
+
+    rows.push({
+      id: Date.now() + rows.length,
+      date: isoDate,
+      desc,
+      cat: type === 'income' ? 'הכנסה' : autoCategory(desc),
+      amount,
+      type,
+      payment: 'אשראי',
+      _selected: true
+    });
+  }
+  return rows;
 }
 
 // ══ CSV IMPORT ───────────────────────────────────────────────
@@ -1218,14 +1495,15 @@ function clearAll() {
 }
 
 // ══ INIT ─────────────────────────────────────────────────────
-load();
-setTodayDate();
-populateCatSelects();
-renderDashboard();
+window.addEventListener("load", function() {
+  load();
+  setTodayDate();
+  populateCatSelects();
+  renderDashboard();
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
+});
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
 </script>
+
 </body>
 </html>
