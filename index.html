@@ -735,10 +735,33 @@ let selectedMonth = new Date().getMonth();
 let importRows = [];
 
 // ══ STORAGE ══════════════════════════════════════════════════
-function save() { localStorage.setItem('budget_app', JSON.stringify(state)); }
+function save() {
+  try {
+    const data = JSON.stringify(state);
+    localStorage.setItem('budget_app', data);
+    // Verify it actually saved
+    const verify = localStorage.getItem('budget_app');
+    if (!verify) throw new Error('localStorage write failed');
+  } catch(e) {
+    console.error('Save failed:', e);
+    // Show error to user
+    setTimeout(() => toast('שגיאה בשמירה: ' + e.message, 'error'), 100);
+  }
+}
+
 function load() {
-  const d = localStorage.getItem('budget_app');
-  if (d) { try { state = JSON.parse(d); } catch(e) {} }
+  try {
+    const d = localStorage.getItem('budget_app');
+    if (d) {
+      const parsed = JSON.parse(d);
+      state = parsed;
+      console.log('Loaded state, transactions:', state.transactions?.length || 0);
+    } else {
+      console.log('No saved data found');
+    }
+  } catch(e) {
+    console.error('Load failed:', e);
+  }
 }
 
 // ══ TOAST ════════════════════════════════════════════════════
@@ -964,7 +987,10 @@ function addTransaction() {
 
   state.transactions.push({ id: Date.now(), date, desc, cat, amount, type, payment });
   save();
-  toast(`✅ עסקה נוספה: ${desc}`);
+  // Verify saved
+  const check = localStorage.getItem('budget_app');
+  console.log('After addTransaction, localStorage size:', check ? check.length : 0);
+  toast('עסקה נוספה: ' + desc);
   document.getElementById('tx-desc').value = '';
   document.getElementById('tx-amount').value = '';
   renderTxTable();
@@ -1655,7 +1681,7 @@ window.addEventListener("load", function() {
   setTodayDate();
   populateCatSelects();
   renderDashboard();
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
+  // SW disabled to prevent caching issues
 });
 
 </script>
