@@ -736,30 +736,30 @@ let importRows = [];
 
 // ══ STORAGE ══════════════════════════════════════════════════
 // ── Storage: try localStorage, fallback to sessionStorage ──
-const STORAGE_KEY = 'haKesef_v1';
+const STORAGE_KEY = 'budget_app';
 
 function save() {
   try {
-    const data = JSON.stringify(state);
-    localStorage.setItem(STORAGE_KEY, data);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch(e) {
-    console.warn('localStorage failed, trying sessionStorage', e);
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e2) {}
+    console.warn('save error', e);
   }
 }
 
 function load() {
   try {
-    // Try localStorage first
-    let d = localStorage.getItem(STORAGE_KEY);
-    // Fallback: old key name
-    if (!d) d = localStorage.getItem('budget_app');
-    if (d) { state = JSON.parse(d); return; }
-  } catch(e) { console.warn('load error', e); }
+    const d = localStorage.getItem(STORAGE_KEY);
+    if (d) state = JSON.parse(d);
+  } catch(e) {
+    console.warn('load error', e);
+  }
 }
 
-// Auto-save every 10 seconds as safety net
-setInterval(() => { try { save(); } catch(e){} }, 10000);
+// Save on hide/close
+window.addEventListener('pagehide', () => { try { save(); } catch(e){} });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { try { save(); } catch(e){} }
+});
 
 // ══ TOAST ════════════════════════════════════════════════════
 function toast(msg, type='success') {
@@ -1675,17 +1675,11 @@ function clearAll() {
 // ══ INIT ─────────────────────────────────────────────────────
 window.addEventListener("load", function() {
   load();
-  applyAllRecurring();
   setTodayDate();
   populateCatSelects();
   renderDashboard();
   // SW disabled to prevent caching issues
-// Save before page closes
-window.addEventListener('beforeunload', () => { try { save(); } catch(e){} });
-window.addEventListener('pagehide', () => { try { save(); } catch(e){} });
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') { try { save(); } catch(e){} }
-});
+
 });
 
 </script>
