@@ -735,34 +735,31 @@ let selectedMonth = new Date().getMonth();
 let importRows = [];
 
 // ══ STORAGE ══════════════════════════════════════════════════
+// ── Storage: try localStorage, fallback to sessionStorage ──
+const STORAGE_KEY = 'haKesef_v1';
+
 function save() {
   try {
     const data = JSON.stringify(state);
-    localStorage.setItem('budget_app', data);
-    // Verify it actually saved
-    const verify = localStorage.getItem('budget_app');
-    if (!verify) throw new Error('localStorage write failed');
+    localStorage.setItem(STORAGE_KEY, data);
   } catch(e) {
-    console.error('Save failed:', e);
-    // Show error to user
-    setTimeout(() => toast('שגיאה בשמירה: ' + e.message, 'error'), 100);
+    console.warn('localStorage failed, trying sessionStorage', e);
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e2) {}
   }
 }
 
 function load() {
   try {
-    const d = localStorage.getItem('budget_app');
-    if (d) {
-      const parsed = JSON.parse(d);
-      state = parsed;
-      console.log('Loaded state, transactions:', state.transactions?.length || 0);
-    } else {
-      console.log('No saved data found');
-    }
-  } catch(e) {
-    console.error('Load failed:', e);
-  }
+    // Try localStorage first
+    let d = localStorage.getItem(STORAGE_KEY);
+    // Fallback: old key name
+    if (!d) d = localStorage.getItem('budget_app');
+    if (d) { state = JSON.parse(d); return; }
+  } catch(e) { console.warn('load error', e); }
 }
+
+// Auto-save every 10 seconds as safety net
+setInterval(() => { try { save(); } catch(e){} }, 10000);
 
 // ══ TOAST ════════════════════════════════════════════════════
 function toast(msg, type='success') {
@@ -1042,7 +1039,8 @@ function renderTxTable() {
 
 function deleteTransaction(id) {
   state.transactions = state.transactions.filter(t => t.id !== id);
-  save(); renderTxTable();
+  save();
+  renderTxTable();
   if (document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
   toast('עסקה נמחקה');
 }
@@ -1413,7 +1411,7 @@ function confirmImport() {
   if (!selected.length) { toast('לא נבחרו עסקאות','error'); return; }
   state.transactions.push(...selected);
   save();
-  toast(`✅ יובאו ${selected.length} עסקאות בהצלחה`);
+  toast('יובאו ' + selected.length + ' עסקאות בהצלחה');
   document.getElementById('import-preview').style.display = 'none';
   importRows = [];
   document.getElementById('csv-file').value = '';
@@ -1625,7 +1623,7 @@ function addRecurringToMonth() {
 
   save();
   if (added > 0) {
-    toast(`נוספו ${added} עסקאות קבועות לחודש הנוכחי`);
+    toast('נוספו ' + added + ' עסקאות קבועות לחודש הנוכחי');
     renderDashboard();
   } else {
     toast('כל העסקאות הקבועות כבר קיימות החודש');
@@ -1682,6 +1680,12 @@ window.addEventListener("load", function() {
   populateCatSelects();
   renderDashboard();
   // SW disabled to prevent caching issues
+// Save before page closes
+window.addEventListener('beforeunload', () => { try { save(); } catch(e){} });
+window.addEventListener('pagehide', () => { try { save(); } catch(e){} });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { try { save(); } catch(e){} }
+});
 });
 
 </script>
