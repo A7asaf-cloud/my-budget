@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -393,12 +392,10 @@ body {
   .nav-tab span { display: none; }
 }
 </style>
-
 </head>
 <body>
 
 <!-- TOP BAR -->
-
 <div class="topbar">
   <div class="topbar-logo">💰 הכסף <span>שלי</span></div>
   <div class="nav-tabs">
@@ -412,286 +409,276 @@ body {
 <div class="main">
 
   <!-- ══════════════════════════════════════ DASHBOARD ══ -->
-
   <div class="page active" id="page-dashboard">
 
-```
-<!-- Month selector -->
-<div class="month-selector" id="month-selector"></div>
+    <!-- Month selector -->
+    <div class="month-selector" id="month-selector"></div>
 
-<!-- Stats -->
-<div class="stats-grid">
-  <div class="stat-card income">
-    <div class="stat-label">הכנסות החודש</div>
-    <div class="stat-value" id="stat-income">₪0</div>
-    <div class="stat-sub" id="stat-income-sub"></div>
-  </div>
-  <div class="stat-card expense">
-    <div class="stat-label">הוצאות החודש</div>
-    <div class="stat-value" id="stat-expense">₪0</div>
-    <div class="stat-sub" id="stat-expense-sub"></div>
-  </div>
-  <div class="stat-card balance">
-    <div class="stat-label">יתרה</div>
-    <div class="stat-value" id="stat-balance">₪0</div>
-    <div class="stat-sub" id="stat-balance-sub"></div>
-  </div>
-  <div class="stat-card budget">
-    <div class="stat-label">ניצול תקציב</div>
-    <div class="stat-value" id="stat-budget-pct">0%</div>
-    <div class="stat-sub" id="stat-budget-sub"></div>
-  </div>
-</div>
-
-<!-- Charts + Budget Bars -->
-<div class="two-col">
-  <div class="card">
-    <div class="section-title">📊 הוצאות לפי קטגוריה</div>
-    <div class="chart-wrap">
-      <canvas id="chart-donut"></canvas>
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card income">
+        <div class="stat-label">הכנסות החודש</div>
+        <div class="stat-value" id="stat-income">₪0</div>
+        <div class="stat-sub" id="stat-income-sub"></div>
+      </div>
+      <div class="stat-card expense">
+        <div class="stat-label">הוצאות החודש</div>
+        <div class="stat-value" id="stat-expense">₪0</div>
+        <div class="stat-sub" id="stat-expense-sub"></div>
+      </div>
+      <div class="stat-card balance">
+        <div class="stat-label">יתרה</div>
+        <div class="stat-value" id="stat-balance">₪0</div>
+        <div class="stat-sub" id="stat-balance-sub"></div>
+      </div>
+      <div class="stat-card budget">
+        <div class="stat-label">ניצול תקציב</div>
+        <div class="stat-value" id="stat-budget-pct">0%</div>
+        <div class="stat-sub" id="stat-budget-sub"></div>
+      </div>
     </div>
-  </div>
-  <div class="card">
-    <div class="section-title">📅 הוצאות לפי חודש</div>
-    <div class="chart-wrap">
-      <canvas id="chart-monthly"></canvas>
+
+    <!-- Charts + Budget Bars -->
+    <div class="two-col">
+      <div class="card">
+        <div class="section-title">📊 הוצאות לפי קטגוריה</div>
+        <div class="chart-wrap">
+          <canvas id="chart-donut"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">📅 הוצאות לפי חודש</div>
+        <div class="chart-wrap">
+          <canvas id="chart-monthly"></canvas>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- Budget bars -->
-<div class="card" style="margin-bottom:20px">
-  <div class="section-title">🎯 ניצול תקציב לפי קטגוריה</div>
-  <div id="budget-bars"></div>
-</div>
+    <!-- Budget bars -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title">🎯 ניצול תקציב לפי קטגוריה</div>
+      <div id="budget-bars"></div>
+    </div>
 
-<!-- Recent transactions -->
-<div class="card">
-  <div class="section-title" style="justify-content:space-between">
-    <span>🕐 עסקאות אחרונות</span>
-    <button class="btn btn-outline" style="font-size:13px;padding:6px 14px" onclick="showPage('transactions')">הצג הכל</button>
-  </div>
-  <div id="recent-tx"></div>
-</div>
-```
+    <!-- Recent transactions -->
+    <div class="card">
+      <div class="section-title" style="justify-content:space-between">
+        <span>🕐 עסקאות אחרונות</span>
+        <button class="btn btn-outline" style="font-size:13px;padding:6px 14px" onclick="showPage('transactions')">הצג הכל</button>
+      </div>
+      <div id="recent-tx"></div>
+    </div>
 
   </div>
 
   <!-- ══════════════════════════════════════ TRANSACTIONS ══ -->
-
   <div class="page" id="page-transactions">
 
-```
-<!-- Quick add -->
-<div class="card" style="margin-bottom:20px">
-  <div class="section-title">➕ הוספת עסקה</div>
-  <div class="quick-add">
-    <div class="form-group">
-      <label class="form-label">תאריך</label>
-      <input type="date" class="form-input" id="tx-date">
+    <!-- Quick add -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title">➕ הוספת עסקה</div>
+      <div class="quick-add">
+        <div class="form-group">
+          <label class="form-label">תאריך</label>
+          <input type="date" class="form-input" id="tx-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">תיאור</label>
+          <input type="text" class="form-input" id="tx-desc" placeholder="לדוגמה: סופרמרקט שופרסל">
+        </div>
+        <div class="form-group">
+          <label class="form-label">קטגוריה</label>
+          <select class="form-select" id="tx-cat"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">סכום (₪)</label>
+          <input type="number" class="form-input" id="tx-amount" placeholder="0" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">סוג</label>
+          <select class="form-select" id="tx-type">
+            <option value="expense">הוצאה</option>
+            <option value="income">הכנסה</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">אמצעי תשלום</label>
+          <select class="form-select" id="tx-payment">
+            <option>מזומן</option>
+            <option>אשראי</option>
+            <option>העברה בנקאית</option>
+            <option>ביט/פייבוקס</option>
+          </select>
+        </div>
+        <div class="form-group" style="justify-content:flex-end">
+          <button class="btn btn-primary" onclick="addTransaction()" style="height:40px">הוסף ✓</button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">תיאור</label>
-      <input type="text" class="form-input" id="tx-desc" placeholder="לדוגמה: סופרמרקט שופרסל">
-    </div>
-    <div class="form-group">
-      <label class="form-label">קטגוריה</label>
-      <select class="form-select" id="tx-cat"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">סכום (₪)</label>
-      <input type="number" class="form-input" id="tx-amount" placeholder="0" min="0" step="0.01">
-    </div>
-    <div class="form-group">
-      <label class="form-label">סוג</label>
-      <select class="form-select" id="tx-type">
-        <option value="expense">הוצאה</option>
-        <option value="income">הכנסה</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">אמצעי תשלום</label>
-      <select class="form-select" id="tx-payment">
-        <option>מזומן</option>
-        <option>אשראי</option>
-        <option>העברה בנקאית</option>
-        <option>ביט/פייבוקס</option>
-      </select>
-    </div>
-    <div class="form-group" style="justify-content:flex-end">
-      <button class="btn btn-primary" onclick="addTransaction()" style="height:40px">הוסף ✓</button>
-    </div>
-  </div>
-</div>
 
-<!-- Filters -->
-<div class="filters-row">
-  <div class="filter-chip active" onclick="filterType(this,'all')">הכל</div>
-  <div class="filter-chip" onclick="filterType(this,'expense')">הוצאות</div>
-  <div class="filter-chip" onclick="filterType(this,'income')">הכנסות</div>
-  <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-cat" onchange="renderTxTable()">
-    <option value="">כל הקטגוריות</option>
-  </select>
-  <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-month" onchange="renderTxTable()">
-    <option value="">כל החודשים</option>
-  </select>
-  <input type="text" class="form-input" style="width:200px" id="filter-search" placeholder="🔍 חיפוש..." oninput="renderTxTable()">
-  <button class="btn btn-red" onclick="clearAllTransactions()">מחק הכל</button>
-</div>
+    <!-- Filters -->
+    <div class="filters-row">
+      <div class="filter-chip active" onclick="filterType(this,'all')">הכל</div>
+      <div class="filter-chip" onclick="filterType(this,'expense')">הוצאות</div>
+      <div class="filter-chip" onclick="filterType(this,'income')">הכנסות</div>
+      <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-cat" onchange="renderTxTable()">
+        <option value="">כל הקטגוריות</option>
+      </select>
+      <select class="form-select" style="width:auto;padding:5px 12px;font-size:13px" id="filter-month" onchange="renderTxTable()">
+        <option value="">כל החודשים</option>
+      </select>
+      <input type="text" class="form-input" style="width:200px" id="filter-search" placeholder="🔍 חיפוש..." oninput="renderTxTable()">
+      <button class="btn btn-red" onclick="clearAllTransactions()">מחק הכל</button>
+    </div>
 
-<!-- Table -->
-<div class="card" style="overflow-x:auto">
-  <table class="tx-table" id="tx-table">
-    <thead>
-      <tr>
-        <th>תאריך</th>
-        <th>תיאור</th>
-        <th>קטגוריה</th>
-        <th>סכום</th>
-        <th>סוג</th>
-        <th>תשלום</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="tx-tbody"></tbody>
-  </table>
-</div>
-```
+    <!-- Table -->
+    <div class="card" style="overflow-x:auto">
+      <table class="tx-table" id="tx-table">
+        <thead>
+          <tr>
+            <th>תאריך</th>
+            <th>תיאור</th>
+            <th>קטגוריה</th>
+            <th>סכום</th>
+            <th>סוג</th>
+            <th>תשלום</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tx-tbody"></tbody>
+      </table>
+    </div>
 
   </div>
 
   <!-- ══════════════════════════════════════ IMPORT ══ -->
-
   <div class="page" id="page-import">
 
-```
-<!-- Tabs -->
-<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-  <button class="filter-chip active" id="tab-pdf" onclick="switchImportTab('pdf')">📄 PDF מהבנק</button>
-  <button class="filter-chip" id="tab-xlsx" onclick="switchImportTab('xlsx')">📊 Excel / CSV</button>
-</div>
+    <!-- Tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="filter-chip active" id="tab-pdf" onclick="switchImportTab('pdf')">📄 PDF מהבנק</button>
+      <button class="filter-chip" id="tab-xlsx" onclick="switchImportTab('xlsx')">📊 Excel / CSV</button>
+    </div>
 
-<!-- PDF tab -->
-<div id="import-tab-pdf">
-  <div class="card" style="margin-bottom:16px">
-    <div class="section-title">📄 ייבוא PDF מהבנק</div>
-    <div class="drop-zone" onclick="document.getElementById('pdf-file').click()">
-      <div class="drop-zone-icon">🏦</div>
-      <div class="drop-zone-title">העלה PDF מהבנק</div>
-      <div class="drop-zone-sub">בנק הפועלים, לאומי, דיסקונט, מזרחי</div>
-      <input type="file" id="pdf-file" accept=".pdf" style="display:none" onchange="handlePDF(this)">
+    <!-- PDF tab -->
+    <div id="import-tab-pdf">
+      <div class="card" style="margin-bottom:16px">
+        <div class="section-title">📄 ייבוא PDF מהבנק</div>
+        <div class="drop-zone" onclick="document.getElementById('pdf-file').click()">
+          <div class="drop-zone-icon">🏦</div>
+          <div class="drop-zone-title">העלה PDF מהבנק</div>
+          <div class="drop-zone-sub">בנק הפועלים, לאומי, דיסקונט, מזרחי</div>
+          <input type="file" id="pdf-file" accept=".pdf" style="display:none" onchange="handlePDF(this)">
+        </div>
+        <div id="pdf-loading" style="display:none;text-align:center;padding:24px">
+          <div style="font-size:32px;margin-bottom:8px">⏳</div>
+          <div style="font-weight:600">מנתח את ה-PDF...</div>
+        </div>
+        <div style="margin-top:12px;padding:12px;background:#162540;border-radius:10px;border:1px solid #2d4a6e;font-size:13px;color:var(--muted);line-height:1.8">
+          <strong>איך להוריד PDF מהבנק:</strong><br>
+          בנק הפועלים: כניסה לאתר → חשבונות → תנועות → ייצוא PDF<br>
+          לאומי: פעולות → הפקת דפי חשבון → PDF<br>
+          דיסקונט: חשבון עו"ש → תנועות → הדפסה/PDF
+        </div>
+      </div>
     </div>
-    <div id="pdf-loading" style="display:none;text-align:center;padding:24px">
-      <div style="font-size:32px;margin-bottom:8px">⏳</div>
-      <div style="font-weight:600">מנתח את ה-PDF...</div>
-    </div>
-    <div style="margin-top:12px;padding:12px;background:#162540;border-radius:10px;border:1px solid #2d4a6e;font-size:13px;color:var(--muted);line-height:1.8">
-      <strong>איך להוריד PDF מהבנק:</strong><br>
-      בנק הפועלים: כניסה לאתר → חשבונות → תנועות → ייצוא PDF<br>
-      לאומי: פעולות → הפקת דפי חשבון → PDF<br>
-      דיסקונט: חשבון עו"ש → תנועות → הדפסה/PDF
-    </div>
-  </div>
-</div>
 
-<!-- Excel/CSV tab -->
-<div id="import-tab-xlsx" style="display:none">
-  <div class="card" style="margin-bottom:16px">
-    <div class="section-title">📊 ייבוא Excel / CSV</div>
-    <div class="drop-zone" onclick="document.getElementById('xlsx-file').click()">
-      <div class="drop-zone-icon">📂</div>
-      <div class="drop-zone-title">העלה קובץ Excel או CSV</div>
-      <div class="drop-zone-sub">.xlsx, .xls, .csv — ייצוא ישיר מהבנק</div>
-      <input type="file" id="xlsx-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleXLSX(this)">
+    <!-- Excel/CSV tab -->
+    <div id="import-tab-xlsx" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div class="section-title">📊 ייבוא Excel / CSV</div>
+        <div class="drop-zone" onclick="document.getElementById('xlsx-file').click()">
+          <div class="drop-zone-icon">📂</div>
+          <div class="drop-zone-title">העלה קובץ Excel או CSV</div>
+          <div class="drop-zone-sub">.xlsx, .xls, .csv — ייצוא ישיר מהבנק</div>
+          <input type="file" id="xlsx-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleXLSX(this)">
+        </div>
+        <div style="margin-top:12px;padding:12px;background:#162540;border-radius:10px;border:1px solid #2d4a6e;font-size:13px;color:var(--muted);line-height:1.8">
+          <strong>איך להוריד Excel מהבנק:</strong><br>
+          בנק הפועלים: תנועות → ייצוא Excel<br>
+          לאומי: תנועות → ייצוא לאקסל<br>
+          כרטיס אשראי (כאל/מקס/ויזה): אתר החברה → עסקאות → ייצוא Excel<br>
+          <span style="color:var(--blue)">💡 CSV עובד גם ישירות מהורדות הבנק</span>
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn btn-outline" onclick="downloadSampleCSV()">⬇️ הורד CSV לדוגמה</button>
+        </div>
+      </div>
     </div>
-    <div style="margin-top:12px;padding:12px;background:#162540;border-radius:10px;border:1px solid #2d4a6e;font-size:13px;color:var(--muted);line-height:1.8">
-      <strong>איך להוריד Excel מהבנק:</strong><br>
-      בנק הפועלים: תנועות → ייצוא Excel<br>
-      לאומי: תנועות → ייצוא לאקסל<br>
-      כרטיס אשראי (כאל/מקס/ויזה): אתר החברה → עסקאות → ייצוא Excel<br>
-      <span style="color:var(--blue)">💡 CSV עובד גם ישירות מהורדות הבנק</span>
-    </div>
-    <div style="margin-top:10px">
-      <button class="btn btn-outline" onclick="downloadSampleCSV()">⬇️ הורד CSV לדוגמה</button>
-    </div>
-  </div>
-</div>
 
-<!-- Preview (shared) -->
-<div id="import-preview" style="display:none">
-  <div class="card">
-    <div class="section-title" id="import-title">תצוגה מקדימה</div>
-    <div style="overflow-x:auto">
-      <table class="tx-table">
-        <thead>
-          <tr><th>תאריך</th><th>תיאור</th><th>קטגוריה</th><th>סכום</th><th>סוג</th><th>תשלום</th>
-          <th><input type="checkbox" id="select-all-import" onchange="toggleAllImport(this)" checked></th></tr>
-        </thead>
-        <tbody id="preview-tbody"></tbody>
-      </table>
+    <!-- Preview (shared) -->
+    <div id="import-preview" style="display:none">
+      <div class="card">
+        <div class="section-title" id="import-title">תצוגה מקדימה</div>
+        <div style="overflow-x:auto">
+          <table class="tx-table">
+            <thead>
+              <tr><th>תאריך</th><th>תיאור</th><th>קטגוריה</th><th>סכום</th><th>סוג</th><th>תשלום</th>
+              <th><input type="checkbox" id="select-all-import" onchange="toggleAllImport(this)" checked></th></tr>
+            </thead>
+            <tbody id="preview-tbody"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="confirmImport()">✅ ייבא עסקאות מסומנות</button>
+          <button class="btn btn-outline" onclick="cancelImport()">ביטול</button>
+        </div>
+      </div>
     </div>
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="confirmImport()">✅ ייבא עסקאות מסומנות</button>
-      <button class="btn btn-outline" onclick="cancelImport()">ביטול</button>
-    </div>
-  </div>
-</div>
-```
 
   </div>
 
-```
-<!-- ══════════════════════════════════════ SETTINGS ══ -->
-```
-
+    <!-- ══════════════════════════════════════ SETTINGS ══ -->
   <div class="page" id="page-settings">
     <div class="settings-grid">
 
-```
-  <div class="card">
-    <div class="section-title">💰 הכנסות קבועות</div>
-    <div id="recurring-income-settings"></div>
-    <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addRecurringIncome()">+ הוסף הכנסה קבועה</button>
-    <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
-  </div>
+      <div class="card">
+        <div class="section-title">💰 הכנסות קבועות</div>
+        <div id="recurring-income-settings"></div>
+        <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addRecurringIncome()">+ הוסף הכנסה קבועה</button>
+        <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
+      </div>
 
-  <div class="card">
-    <div class="section-title">📌 הוצאות קבועות</div>
-    <div id="recurring-expense-settings"></div>
-    <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addRecurringExpense()">+ הוסף הוצאה קבועה</button>
-    <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
-  </div>
+      <div class="card">
+        <div class="section-title">📌 הוצאות קבועות</div>
+        <div id="recurring-expense-settings"></div>
+        <button class="btn btn-green" style="margin-top:12px;width:100%" onclick="addRecurringExpense()">+ הוסף הוצאה קבועה</button>
+        <button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="saveSettings()">שמור ✓</button>
+      </div>
 
-  <div class="card">
-    <div class="section-title">📊 הקצאת תקציב (%)</div>
-    <div id="budget-settings"></div>
-    <div style="margin-top:12px;padding:10px;border-radius:10px;background:#162540;font-size:13px;display:flex;justify-content:space-between">
-      <span>סך אחוזים:</span>
-      <span id="pct-total" style="font-weight:700">0%</span>
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">⚡ החל עסקאות קבועות</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">לחץ בתחילת כל חודש כדי להוסיף את כל ההכנסות וההוצאות הקבועות שלך</div>
+        <button class="btn btn-primary" style="width:100%;padding:14px" onclick="addRecurringToMonth()">הוסף עסקאות קבועות לחודש הנוכחי</button>
+      </div>
+
+      <div class="card">
+        <div class="section-title">📊 הקצאת תקציב (%)</div>
+        <div id="budget-settings"></div>
+        <div style="margin-top:12px;padding:10px;border-radius:10px;background:#162540;font-size:13px;display:flex;justify-content:space-between">
+          <span>סך אחוזים:</span>
+          <span id="pct-total" style="font-weight:700">0%</span>
+        </div>
+        <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
+      </div>
+
+      <div class="card">
+        <div class="section-title">🗂️ ניהול נתונים</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-outline" onclick="exportJSON()">📤 ייצוא נתונים (JSON)</button>
+          <button class="btn btn-outline" onclick="exportCSV()">📤 ייצוא נתונים (CSV)</button>
+          <button class="btn btn-outline" onclick="document.getElementById('import-json').click()">📥 ייבוא נתונים (JSON)</button>
+          <input type="file" id="import-json" accept=".json" style="display:none" onchange="importJSON(this)">
+          <button class="btn btn-red" onclick="if(confirm('למחוק את כל הנתונים?'))clearAll()">🗑️ מחיקת כל הנתונים</button>
+        </div>
+      </div>
+
     </div>
-    <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="saveSettings()">שמור ✓</button>
-  </div>
-
-  <div class="card">
-    <div class="section-title">🗂️ ניהול נתונים</div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <button class="btn btn-outline" onclick="exportJSON()">📤 ייצוא נתונים (JSON)</button>
-      <button class="btn btn-outline" onclick="exportCSV()">📤 ייצוא נתונים (CSV)</button>
-      <button class="btn btn-outline" onclick="document.getElementById('import-json').click()">📥 ייבוא נתונים (JSON)</button>
-      <input type="file" id="import-json" accept=".json" style="display:none" onchange="importJSON(this)">
-      <button class="btn btn-red" onclick="if(confirm('למחוק את כל הנתונים?'))clearAll()">🗑️ מחיקת כל הנתונים</button>
-    </div>
-  </div>
-
-</div>
-```
-
   </div>
 
 </div>
 
 <!-- TOAST -->
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -722,7 +709,7 @@ let state = {
   transactions: [],
   settings: {
     income: [
-      { label: "משכורת עיקרית (נטו)", amount: 11787 },
+      { label: "משכורת עיקרית (נטו)", amount: 0 },
       { label: "פרילנס", amount: 0 },
       { label: "השקעות", amount: 0 },
       { label: "אחר", amount: 0 }
@@ -737,13 +724,8 @@ let state = {
       "⚡ הוצאות קבועות": 15,
       "🔄 הוצאות משתנות": 10
     },
-    fixedExpenses: [
-      { label: "שכירות", cat: "🏠 דיור / שכירות", amount: 0 },
-      { label: "ביטוח רכב", cat: "🚗 רכב ותחבורה", amount: 0 }
-    ],
-    recurringIncome: [
-      { label: "משכורת", amount: 11787, day: 10 }
-    ],
+    fixedExpenses: [],
+    recurringIncome: [],
     recurringExpenses: []
   }
 };
@@ -1559,51 +1541,68 @@ function updatePctTotal() {
 }
 
 function saveSettings() {
-  // Sync recurring income for current month
-  applyRecurringForMonth(new Date().getFullYear(), new Date().getMonth());
   save();
-  toast('הגדרות נשמרו — עסקאות קבועות עודכנו');
+  toast('ההגדרות נשמרו');
   renderDashboard();
+  if (document.getElementById('page-settings').classList.contains('active')) renderSettings();
 }
 
-function applyRecurringForMonth(year, month) {
-  // Remove old auto-generated recurring for this month
-  state.transactions = state.transactions.filter(t => !t._recurring ||
-    !(new Date(t.date).getFullYear() === year && new Date(t.date).getMonth() === month));
+function applyAllRecurring() {
+  // Do nothing on load — recurring items are added manually via "הוסף לחודש הנוכחי"
+}
 
+function addRecurringToMonth() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
   const pad = n => String(n).padStart(2,'0');
+  let added = 0;
 
-  // Add recurring income
   (state.settings.recurringIncome || []).forEach(r => {
     if (!r.label || !r.amount) return;
     const day = Math.min(r.day || 10, 28);
     const date = `${year}-${pad(month+1)}-${pad(day)}`;
-    state.transactions.push({
-      id: Date.now() + Math.random(),
-      date, desc: r.label, cat: 'הכנסה',
-      amount: r.amount, type: 'income',
-      payment: 'העברה בנקאית', _recurring: true
-    });
+    // Check not already added this month
+    const exists = state.transactions.some(t =>
+      t._recurring && t.desc === r.label && t.type === 'income' &&
+      new Date(t.date).getMonth() === month && new Date(t.date).getFullYear() === year
+    );
+    if (!exists) {
+      state.transactions.push({
+        id: Date.now() + Math.random(),
+        date, desc: r.label, cat: 'הכנסה',
+        amount: r.amount, type: 'income',
+        payment: 'העברה בנקאית', _recurring: true
+      });
+      added++;
+    }
   });
 
-  // Add recurring expenses
   (state.settings.recurringExpenses || []).forEach(r => {
     if (!r.label || !r.amount) return;
     const day = Math.min(r.day || 1, 28);
     const date = `${year}-${pad(month+1)}-${pad(day)}`;
-    state.transactions.push({
-      id: Date.now() + Math.random(),
-      date, desc: r.label, cat: r.cat || '⚡ הוצאות קבועות',
-      amount: r.amount, type: 'expense',
-      payment: 'הוראת קבע', _recurring: true
-    });
+    const exists = state.transactions.some(t =>
+      t._recurring && t.desc === r.label && t.type === 'expense' &&
+      new Date(t.date).getMonth() === month && new Date(t.date).getFullYear() === year
+    );
+    if (!exists) {
+      state.transactions.push({
+        id: Date.now() + Math.random(),
+        date, desc: r.label, cat: r.cat || '⚡ הוצאות קבועות',
+        amount: r.amount, type: 'expense',
+        payment: 'הוראת קבע', _recurring: true
+      });
+      added++;
+    }
   });
-}
 
-function applyAllRecurring() {
-  const now = new Date();
-  for (let m = 0; m <= now.getMonth(); m++) {
-    applyRecurringForMonth(now.getFullYear(), m);
+  save();
+  if (added > 0) {
+    toast(`נוספו ${added} עסקאות קבועות לחודש הנוכחי`);
+    renderDashboard();
+  } else {
+    toast('כל העסקאות הקבועות כבר קיימות החודש');
   }
 }
 
@@ -1660,6 +1659,5 @@ window.addEventListener("load", function() {
 });
 
 </script>
-
 </body>
 </html>
