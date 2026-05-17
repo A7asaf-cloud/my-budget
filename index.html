@@ -835,26 +835,90 @@ function parseBankText(text){
   });return rows;
 }
 function parseExcelRows(rows){
-  if(!rows.length)return[];let headerRow=0;
-  for(let i=0;i<Math.min(10,rows.length);i++){const r=rows[i].map(c=>String(c).toLowerCase());if(r.some(c=>c.includes('תאריך')||c.includes('date')||c.includes('סכום'))){headerRow=i;break;}}
-  const headers=rows[headerRow].map(c=>String(c).toLowerCase());
-  const dateIdx=headers.findIndex(h=>h.includes('תאריך')||h.includes('date'));
-  const descIdx=headers.findIndex(h=>h.includes('תיאור')||h.includes('פירוט')||h.includes('description')||h.includes('מוטב'));
-  const debitIdx=headers.findIndex(h=>h.includes('חובה')||h.includes('debit'));
-  const creditIdx=headers.findIndex(h=>h.includes('זכות')||h.includes('credit'));
-  const amtIdx=headers.findIndex(h=>h.includes('סכום')||h.includes('amount'));
-  const result=[];
-  for(let i=headerRow+1;i<rows.length;i++){
-    const row=rows[i];if(!row.some(c=>c!==''))continue;
-    let dateStr='';
-    if(dateIdx>=0&&row[dateIdx]){const d=row[dateIdx];if(d instanceof Date)dateStr=d.toISOString().slice(0,10);else{const m=String(d).match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);if(m){const y=m[3].length===2?'20'+m[3]:m[3];dateStr=`${y}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;}}}
-    const desc=descIdx>=0?String(row[descIdx]||'').trim():'';
-    let amount=0,type='expense';
-    if(debitIdx>=0&&creditIdx>=0){const deb=parseFloat(String(row[debitIdx]||'0').replace(/[,\s]/g,''))||0;const cre=parseFloat(String(row[creditIdx]||'0').replace(/[,\s]/g,''))||0;if(cre>0){amount=cre;type='income';}else if(deb>0){amount=deb;type='expense';}}
-    else if(amtIdx>=0){amount=Math.abs(parseFloat(String(row[amtIdx]||'0').replace(/[,\s]/g,''))||0);}
-    if(!desc||amount<=0||!dateStr)continue;
-    result.push({date:dateStr,desc,amount,type,category:autoCategory(desc)});
-  }return result;
+  if(!rows.length) return [];
+
+  // --- DETECT FORMAT ---
+  // Skip leading non-data rows (titles, empty rows)
+  let headerRow = -1;
+  for(let i=0;i<Math.min(12,rows.length);i++){
+    const r = rows[i].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase());
+    // Look for header indicators
+    if(r.some(c=>c.includes('תאריך')||c.includes('date')||c.includes('שם בית')||c.includes('פירוט')||c.includes('תאור')||c.includes('description'))){
+      headerRow = i; break;
+    }
+  }
+  if(headerRow === -1) headerRow = 1; // fallback: assume row 1 is header (row 0 = title)
+
+  const headers = rows[headerRow].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase().trim());
+
+  // Find column indices - handle Hebrew newlines in header cells
+  const dateIdx   = headers.findIndex(h=>h.includes('תאריך')||h.includes('date'));
+  const descIdx   = headers.findIndex(h=>h.includes('שם בית')||h.includes('פירוט')||h.includes('תיאור')||h.includes('description')||h.includes('מוטב')||h.includes('עסקה'));
+  const amtIdx    = headers.findIndex(h=>(h.includes('סכום')||h.includes('amount'))&&!h.includes('מט'));
+  const debitIdx  = headers.findIndex(h=>h.includes('חובה')||h.includes('debit'));
+  const creditIdx = headers.findIndex(h=>h.includes('זכות')||h.includes('credit'));
+
+  const result = [];
+
+  for(let i=headerRow+1; i<rows.length; i++){
+    const row = rows[i];
+    if(!row || row.every(c=>c===null||c===undefined||c==='')) continue;
+
+    // --- DATE ---
+    let dateStr = '';
+    const rawDate = dateIdx>=0 ? row[dateIdx] : row[0];
+    if(rawDate instanceof Date || (rawDate && rawDate.getFullYear)){
+      // SheetJS with cellDates:true returns Date objects
+      const d = rawDate;
+      dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    } else if(rawDate && typeof rawDate === 'string'){
+      const m = rawDate.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+      if(m){ const y=m[3].length===2?'20'+m[3]:m[3]; dateStr=`${y}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`; }
+    } else if(rawDate && typeof rawDate === 'number' && rawDate > 40000){
+      // Excel serial date
+      const excelEpoch = new Date(1899,11,30);
+      const d = new Date(excelEpoch.getTime() + rawDate * 86400000);
+      dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    if(!dateStr) continue;
+
+    // --- DESCRIPTION ---
+    const desc = String(descIdx>=0 ? (row[descIdx]||'') : (row[1]||'')).trim();
+    if(!desc) continue;
+
+    // Skip summary rows
+    if(desc.includes('סה"כ')||desc.includes('סהכ')||desc.includes('total')||desc.toLowerCase().includes('total')) continue;
+
+    // --- AMOUNT & TYPE ---
+    let amount = 0, type = 'expense';
+
+    if(debitIdx>=0 && creditIdx>=0){
+      // Two-column format (bank account statement)
+      const deb = parseFloat(String(row[debitIdx]||'0').replace(/[,\s]/g,''))||0;
+      const cre = parseFloat(String(row[creditIdx]||'0').replace(/[,\s]/g,''))||0;
+      if(cre>0){ amount=cre; type='income'; }
+      else if(deb>0){ amount=deb; type='expense'; }
+    } else {
+      // Single amount column (credit card statement - all expenses)
+      const rawAmt = amtIdx>=0 ? row[amtIdx] : row[2];
+      if(rawAmt===null||rawAmt===undefined||rawAmt==='') continue;
+      amount = Math.abs(parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0);
+      // Negative = income (refund/credit)
+      const rawNum = parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0;
+      type = rawNum < 0 ? 'income' : 'expense';
+    }
+
+    if(amount <= 0) continue;
+
+    result.push({
+      date: dateStr,
+      desc,
+      amount,
+      type,
+      category: autoCategory(desc)
+    });
+  }
+  return result;
 }
 
 let previewRows=[];
