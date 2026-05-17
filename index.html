@@ -965,6 +965,33 @@ function parseExcelRows(rows){
     return '';
   }
 
+  // --- FAST PATH: detect Cal/Poalim credit card format ---
+  // Row 0 = title, Row 1 = headers with \n, Row 2+ = data
+  // Col 0 = date serial, Col 1 = merchant name, Col 2 = amount
+  const r1 = rows[1] || [];
+  const h0 = String(r1[0]||'').replace(/\n/g,' ');
+  const h1 = String(r1[1]||'').replace(/\n/g,' ');
+  const h2 = String(r1[2]||'').replace(/\n/g,' ');
+  if(h0.includes('תאריך') && (h1.includes('שם') || h1.includes('פירוט')) && (h2.includes('סכום') || h2.includes('חיוב'))){
+    // Poalim/Cal format confirmed
+    const result = [];
+    for(let i=2; i<rows.length; i++){
+      const row = rows[i];
+      if(!row || row.every(c=>c===null||c===undefined||c==='')) continue;
+      const dateStr = parseDate(row[0]);
+      if(!dateStr) continue;
+      const desc = String(row[1]||'').trim();
+      if(!desc || desc.includes('סה"כ') || desc.includes('סהכ')) continue;
+      const rawAmt = row[2];
+      if(rawAmt===null||rawAmt===undefined||rawAmt==='') continue;
+      const num = parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0;
+      if(num<=0) continue;
+      result.push({date:dateStr, desc, amount:num, type:'expense', category:autoCategory(desc)});
+    }
+    return result;
+  }
+
+  // --- GENERIC PATH ---
   // Find header row
   let headerRow = -1;
   for(let i=0; i<Math.min(12,rows.length); i++){
@@ -977,8 +1004,18 @@ function parseExcelRows(rows){
 
   const headers = rows[headerRow].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase().trim());
 
+  // Detect column indices - search for most specific match first
   const dateIdx  = headers.findIndex(h=>h.includes('תאריך')||h.includes('date'));
-  const descIdx  = headers.findIndex(h=>h.includes('שם בית')||h.includes('פירוט')||h.includes('תיאור')||h.includes('description')||h.includes('מוטב'));
+  // For descIdx: search specifically for שם בית עסק, then other desc headers
+  // Make sure we don't pick the date column
+  let descIdx = headers.findIndex(h=>h.includes('שם בית'));
+  if(descIdx<0) descIdx = headers.findIndex(h=>h.includes('פירוט'));
+  if(descIdx<0) descIdx = headers.findIndex(h=>h.includes('תיאור') && !h.includes('תאריך'));
+  if(descIdx<0) descIdx = headers.findIndex(h=>h.includes('description'));
+  if(descIdx<0) descIdx = headers.findIndex(h=>h.includes('מוטב'));
+  // Fallback: second column (after date)
+  if(descIdx<0 || descIdx===dateIdx) descIdx = dateIdx>=0 ? (dateIdx===0?1:0) : 1;
+  
   const amtIdx   = headers.findIndex(h=>(h.includes('סכום')||h.includes('amount'))&&!h.includes('מט'));
   const debitIdx = headers.findIndex(h=>h.includes('חובה')||h.includes('debit'));
   const creditIdx= headers.findIndex(h=>h.includes('זכות')||h.includes('credit'));
