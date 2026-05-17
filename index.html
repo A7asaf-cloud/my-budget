@@ -810,14 +810,111 @@ async function processExcelFile(file){
   toast('טוען קובץ...','info');
   loadSheetJs(async()=>{
     try{
-      const ab=await file.arrayBuffer();const wb=XLSX.read(ab,{type:'array',cellDates:true});
-      const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const ab=await file.arrayBuffer();
+      // Read with cellDates:false - get raw serial numbers, handle dates manually
+      const wb=XLSX.read(ab,{type:'array',cellDates:false,raw:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      // Use raw:false so dates become formatted strings via dateNF
+      const wb2=XLSX.read(ab,{type:'array',cellDates:true,dateNF:'yyyy-mm-dd'});
+      const ws2=wb2.Sheets[wb2.SheetNames[0]];
+      // sheet_to_json with raw:false converts dates to strings using dateNF
+      const rows=XLSX.utils.sheet_to_json(ws2,{header:1,defval:'',raw:false,dateNF:'yyyy-mm-dd'});
       showPreview(parseExcelRows(rows),'excelPreviewArea');
     }catch(e){toast('שגיאה: '+e.message,'error');}
   });
 }
 
-const CATEGORY_KW={'מזון וסופר':['שופרסל','רמי לוי','מגה','ויקטורי','יינות ביתן','אושר עד','shufersal','rami levy','fresh market','AM:PM'],'אוכל ומסעדות':['מקדונלד','בורגר','פיצה','שווארמה','סושי','קפה','cafe','coffee','mcdonalds','burger','pizza','KFC','דומינו','restaurant'],'רכב':['פז','סונול','דלק','ten','צמיגים','מוסך','paz','sonol','delek','yellow','דור אלון'],'בריאות':['מכבי','כללית','לאומית','מאוחדת','בית מרקחת','טבע','super pharm','pharmacy','רופא'],'תקשורת':['בזק','פרטנר','סלקום','הוט','012','yes','cellcom','partner','019','גולן'],'מנויים דיגיטליים':['netflix','spotify','apple','google','microsoft','adobe','amazon','youtube','disney','dropbox','zoom'],'קניות אונליין':['aliexpress','ebay','shein','zalando','asos','ivory'],'ביגוד':["h&m",'zara','fox','renuar','castro','next','golf'],'ספורט':['fitness','gym','ספורט','דקתלון','decathlon'],'נסיעות':['אל על','ראיין','easy jet','wizzair','booking','airbnb','hotel','sheraton','hilton'],'חינוך':['אוניברסיטה','מכללה','college','university','קורס','udemy','coursera'],'עמלות בנק':['עמלה','דמי ניהול','עמלת','ריבית'],'דיור':['שכר דירה','ארנונה','ועד בית','חשמל','מים','גז'],'חיסכון':['קרן פנסיה','קרן השתלמות','ביטוח חיים'],'השקעות':['בורסה','מניות','קרן נאמנות','etf','trade','broker'],'הכנסה':['משכורת','שכר','זיכוי','salary','income','bonus','dividend']};
+const CATEGORY_KW={
+  'אוכל ומסעדות':[
+    'ספייס אינביידרז','זסטי','שוארמה','meatshop','sandwich','באפלו','נונומימי',
+    'אמריקן פיצה','עולם המזון','מיקה מרקט','קצביית','מ.מ.ש','מאפיי',
+    'שאלתיאלי','סעוד','מקדונלד','בורגר','פיצה','סושי','קפה','cafe',
+    'coffee','mcdonalds','burger','pizza','kfc','דומינו','restaurant',
+    'מסעדה','פלאפל','סטייק','גריל','ביסטרו','hummus','שניצל','שישליק',
+    'בשר','דג','אסיאתי','יפני','איטלקי','סינית','אוכל'
+  ],
+  'מזון וסופר':[
+    'שופרסל','רמי לוי','מגה','ויקטורי','יינות ביתן','אושר עד','קשת טעמים',
+    'shufersal','rami levy','fresh market','am:pm','סופרמרקט','מכולת',
+    'super','supermarket','ספייר','מחסני המזון','סיטי מרקט'
+  ],
+  'ספורט':[
+    'ספייס מועדוני כושר','ספייס כושר','fitness','gym','דקתלון','decathlon',
+    'כושר','מועדון ספורט','שחייה','ריצה','חדר כושר','adidas','nike',
+    'sport','ספורט','פילאטיס','יוגה','מכבי ת"א','הפועל'
+  ],
+  'רכב':[
+    'אפליקציית ten','ten ','פז','סונול','דלק','צמיגים','מוסך','paz',
+    'sonol','delek','yellow','דור אלון','משרד התחבורה','רשיונות נהיגה',
+    'אגרה למבחן','חניה','parking','טסט','רכב','auto','car','tires',
+    'מוסך','פחחות','דיזל','שמן מנוע','מכונאי'
+  ],
+  'בריאות':[
+    'שרותי בריאות כללית','כללית','מכבי','לאומית','מאוחדת',
+    'מנורה מבטחים','עזר מציון','בית מרקחת','טבע','super pharm',
+    'superpharm','pharmacy','רופא','מרפאה','ביטוח בריאות','dental',
+    'שיניים','אופטיקה','משקפיים','פסיכולוג','פיזיותרפיה','קופת חולים',
+    'בי"ח','בית חולים','hospital','רוקח','תרופ'
+  ],
+  'תקשורת':[
+    'hot mobile','בזק','פרטנר','סלקום','הוט','012','yes','cellcom',
+    'partner','019','גולן','מירס','תקשורת','סלולר','אינטרנט','טלפון'
+  ],
+  'מנויים דיגיטליים':[
+    'claude.ai','netflix','spotify','apple.com/bill','paypal *apple',
+    'paypal *google','google play','microsoft','adobe','amazon prime',
+    'youtube','disney','dropbox','zoom','wix','icloud','one drive',
+    'canva','figma','chatgpt','openai','cursor','github','notion',
+    'subscription','מנוי'
+  ],
+  'קניות אונליין':[
+    'aliexpress','ebay','shein','zalando','asos','ivory','וואלה שופס',
+    'amazon','wish','banggood','shopify','etsy','כרזו'
+  ],
+  'ביגוד וטיפוח':[
+    'אמיליו עיצוב שיער','h&m','zara','fox','renuar','castro','next',
+    'golf','terminal','מספרה','תספורת','שיער','beauty','nail','spa',
+    'סלון יופי','פדיקור','מניקור','קוסמטיקה','בגדים','נעליים','shoes',
+    'clothes','fashion','mango','pull&bear','stradivarius'
+  ],
+  'קניות':[
+    'סופר הום','דן דיל','מחסני תאורה','יוניברס','home center','ace',
+    'ikea','כלבו','רמי','office depot','office','כלי עבודה','חשמל',
+    'ריהוט','furniture','electronics','אלקטרוניקה'
+  ],
+  'חינוך':[
+    'המרכז האקדמי רופין','רופין','אוניברסיטה','מכללה','college',
+    'university','קורס','udemy','coursera','ריבית גישור','בית ספר',
+    'גן ילדים','חוג','שיעור פרטי','ספרים','books','סמינר'
+  ],
+  'נסיעות':[
+    'wizz air','wizzair','אל על','ראיין','easy jet','ryanair',
+    'booking','airbnb','hotel','sheraton','hilton','חוף גופרה',
+    'אתר נופש','טיסה','נמל תעופה','airport','flight','agoda'
+  ],
+  'עמלות בנק':[
+    'דמי כרטיס','עמלה','דמי ניהול','עמלת','ריבית','bank fee',
+    'עמלת המרה','שירותי בנק','עמלת עסקה'
+  ],
+  'דיור':[
+    'שכר דירה','ארנונה','ועד בית','חשמל','מים','גז','rent',
+    'electricity','water','gas','ביטוח דירה','הום','שמירה'
+  ],
+  'תרומות':[
+    'עזר מציון','תרומה','donation','charity','ידיד','אגודה'
+  ],
+  'חיסכון':[
+    'קרן פנסיה','קרן השתלמות','חיסכון','savings','pension','גמל'
+  ],
+  'השקעות':[
+    'בורסה','מניות','קרן נאמנות','etf','trade','broker','מסחר',
+    'interactive brokers','מיטב','אלטשולר','פסגות','הראל'
+  ],
+  'הכנסה':[
+    'משכורת','שכר','זיכוי','salary','income','bonus','dividend',
+    'החזר','refund','העברה','הפקדה'
+  ]
+};
 function autoCategory(desc){const d=desc.toLowerCase();for(const[cat,kws]of Object.entries(CATEGORY_KW)){if(kws.some(kw=>d.includes(kw.toLowerCase())))return cat;}return'אחר';}
 function parseBankText(text){
   const lines=text.split('\n');const rows=[];
@@ -837,86 +934,88 @@ function parseBankText(text){
 function parseExcelRows(rows){
   if(!rows.length) return [];
 
-  // --- DETECT FORMAT ---
-  // Skip leading non-data rows (titles, empty rows)
+  // Skip leading title/empty rows, find header row
   let headerRow = -1;
   for(let i=0;i<Math.min(12,rows.length);i++){
     const r = rows[i].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase());
-    // Look for header indicators
-    if(r.some(c=>c.includes('תאריך')||c.includes('date')||c.includes('שם בית')||c.includes('פירוט')||c.includes('תאור')||c.includes('description'))){
+    if(r.some(c=>c.includes('תאריך')||c.includes('שם בית')||c.includes('פירוט')||c.includes('תיאור')||c.includes('date'))){
       headerRow = i; break;
     }
   }
-  if(headerRow === -1) headerRow = 1; // fallback: assume row 1 is header (row 0 = title)
+  if(headerRow === -1) headerRow = 1;
 
   const headers = rows[headerRow].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase().trim());
 
-  // Find column indices - handle Hebrew newlines in header cells
-  const dateIdx   = headers.findIndex(h=>h.includes('תאריך')||h.includes('date'));
-  const descIdx   = headers.findIndex(h=>h.includes('שם בית')||h.includes('פירוט')||h.includes('תיאור')||h.includes('description')||h.includes('מוטב')||h.includes('עסקה'));
-  const amtIdx    = headers.findIndex(h=>(h.includes('סכום')||h.includes('amount'))&&!h.includes('מט'));
-  const debitIdx  = headers.findIndex(h=>h.includes('חובה')||h.includes('debit'));
-  const creditIdx = headers.findIndex(h=>h.includes('זכות')||h.includes('credit'));
+  // Find columns
+  const dateIdx  = headers.findIndex(h=>h.includes('תאריך')||h.includes('date'));
+  const descIdx  = headers.findIndex(h=>h.includes('שם בית')||h.includes('פירוט')||h.includes('תיאור')||h.includes('description')||h.includes('מוטב'));
+  const amtIdx   = headers.findIndex(h=>(h.includes('סכום')||h.includes('amount'))&&!h.includes('מט'));
+  const debitIdx = headers.findIndex(h=>h.includes('חובה')||h.includes('debit'));
+  const creditIdx= headers.findIndex(h=>h.includes('זכות')||h.includes('credit'));
 
   const result = [];
 
   for(let i=headerRow+1; i<rows.length; i++){
     const row = rows[i];
-    if(!row || row.every(c=>c===null||c===undefined||c==='')) continue;
+    if(!row||row.every(c=>c===null||c===undefined||c==='')) continue;
 
-    // --- DATE ---
+    // --- DATE: handle multiple formats ---
     let dateStr = '';
-    const rawDate = dateIdx>=0 ? row[dateIdx] : row[0];
-    if(rawDate instanceof Date || (rawDate && rawDate.getFullYear)){
-      // SheetJS with cellDates:true returns Date objects
-      const d = rawDate;
-      dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    } else if(rawDate && typeof rawDate === 'string'){
-      const m = rawDate.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
-      if(m){ const y=m[3].length===2?'20'+m[3]:m[3]; dateStr=`${y}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`; }
-    } else if(rawDate && typeof rawDate === 'number' && rawDate > 40000){
-      // Excel serial date
-      const excelEpoch = new Date(1899,11,30);
-      const d = new Date(excelEpoch.getTime() + rawDate * 86400000);
+    const rawDate = String(dateIdx>=0 ? (row[dateIdx]||'') : (row[0]||'')).trim();
+
+    // Format: "2026-04-21" (ISO from SheetJS dateNF)
+    if(/^\d{4}-\d{2}-\d{2}/.test(rawDate)){
+      dateStr = rawDate.slice(0,10);
+    }
+    // Format: "21/04/2026" or "21-04-2026"
+    else if(/^\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{4}/.test(rawDate)){
+      const p = rawDate.split(/[\/\-.]/);
+      dateStr = `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+    }
+    // Format: "4/21/2026" (US)
+    else if(/^\d{1,2}\/\d{1,2}\/\d{4}/.test(rawDate)){
+      const p = rawDate.split('/');
+      dateStr = `${p[2]}-${p[0].padStart(2,'0')}-${p[1].padStart(2,'0')}`;
+    }
+    // SheetJS sometimes returns Date object even with raw:false
+    else if(rawDate && rawDate !== 'undefined' && rawDate.includes('GMT')){
+      // "Thu Apr 21 2026 23:59:20 GMT+0300" — parse it
+      const d = new Date(rawDate);
+      if(!isNaN(d.getTime())){
+        dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      }
+    }
+    // Excel serial number (e.g. 46112)
+    else if(/^\d{5}$/.test(rawDate)){
+      const d = new Date(Math.round((parseFloat(rawDate)-25569)*86400*1000));
       dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
+
     if(!dateStr) continue;
 
     // --- DESCRIPTION ---
     const desc = String(descIdx>=0 ? (row[descIdx]||'') : (row[1]||'')).trim();
     if(!desc) continue;
-
-    // Skip summary rows
-    if(desc.includes('סה"כ')||desc.includes('סהכ')||desc.includes('total')||desc.toLowerCase().includes('total')) continue;
+    if(desc.includes('סה"כ')||desc.includes('סהכ')||desc.toLowerCase().includes('total')) continue;
 
     // --- AMOUNT & TYPE ---
-    let amount = 0, type = 'expense';
-
+    let amount=0, type='expense';
     if(debitIdx>=0 && creditIdx>=0){
-      // Two-column format (bank account statement)
-      const deb = parseFloat(String(row[debitIdx]||'0').replace(/[,\s]/g,''))||0;
-      const cre = parseFloat(String(row[creditIdx]||'0').replace(/[,\s]/g,''))||0;
-      if(cre>0){ amount=cre; type='income'; }
-      else if(deb>0){ amount=deb; type='expense'; }
+      const deb=parseFloat(String(row[debitIdx]||'0').replace(/[,\s]/g,''))||0;
+      const cre=parseFloat(String(row[creditIdx]||'0').replace(/[,\s]/g,''))||0;
+      if(cre>0){amount=cre;type='income';}
+      else if(deb>0){amount=deb;type='expense';}
     } else {
-      // Single amount column (credit card statement - all expenses)
       const rawAmt = amtIdx>=0 ? row[amtIdx] : row[2];
       if(rawAmt===null||rawAmt===undefined||rawAmt==='') continue;
-      amount = Math.abs(parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0);
-      // Negative = income (refund/credit)
-      const rawNum = parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0;
-      type = rawNum < 0 ? 'income' : 'expense';
+      const num = parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0;
+      amount = Math.abs(num);
+      type = num < 0 ? 'income' : 'expense';
     }
 
-    if(amount <= 0) continue;
+    if(amount<=0) continue;
 
-    result.push({
-      date: dateStr,
-      desc,
-      amount,
-      type,
-      category: autoCategory(desc)
-    });
+    result.push({date:dateStr, desc, amount, type, category:autoCategory(desc)});
   }
   return result;
 }
