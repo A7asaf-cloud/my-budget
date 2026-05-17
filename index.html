@@ -968,16 +968,14 @@ function parseExcelRows(rows){
   // Find header row
   let headerRow = -1;
   for(let i=0; i<Math.min(12,rows.length); i++){
-    const r = rows[i].map(c=>String(c||'').replace(/
-/g,' ').toLowerCase());
+    const r = rows[i].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase());
     if(r.some(c=>c.includes('תאריך')||c.includes('שם בית')||c.includes('פירוט')||c.includes('תיאור')||c.includes('date'))){
       headerRow = i; break;
     }
   }
   if(headerRow === -1) headerRow = 1;
 
-  const headers = rows[headerRow].map(c=>String(c||'').replace(/
-/g,' ').toLowerCase().trim());
+  const headers = rows[headerRow].map(c=>String(c||'').replace(/\n/g,' ').toLowerCase().trim());
 
   const dateIdx  = headers.findIndex(h=>h.includes('תאריך')||h.includes('date'));
   const descIdx  = headers.findIndex(h=>h.includes('שם בית')||h.includes('פירוט')||h.includes('תיאור')||h.includes('description')||h.includes('מוטב'));
