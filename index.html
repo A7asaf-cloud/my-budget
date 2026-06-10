@@ -324,6 +324,7 @@ tr:last-child td { border-bottom: none; }
         <div class="hero-stat-val exp" id="heroExpense">₪0</div>
       </div>
     </div>
+    <div id="heroCarry" style="display:none;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.75);text-align:center;"></div>
   </div>
 
   <div class="section-hd" style="padding-top:14px;">
@@ -605,14 +606,29 @@ function buildFilterMonths(){
   sel.innerHTML='<option value="">כל המחזורים</option>'+getMonths().map(m=>`<option value="${m}">${getCycleLabel(m)}</option>`).join('');
 }
 
+function getCarryOver(upToCycleKey){
+  // Sum all income - expenses for all cycles BEFORE the given cycle
+  // Returns the cumulative balance carried into this cycle
+  const allCycles = getMonths().filter(m => m < upToCycleKey);
+  let carry = 0;
+  for(const cycle of allCycles){
+    const txs = appData.transactions.filter(t=>getCycleKey(t.date)===cycle);
+    const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    carry += inc - exp;
+  }
+  return carry;
+}
+
 function renderDashboard(){
   const txs=appData.transactions.filter(t=>getCycleKey(t.date)===selectedMonth);
-  // Only transactions in הכנסה category count as budget income
+  // Only salary-category income counts for budget planning
   const income=txs.filter(t=>t.type==='income' && INCOME_CATS.includes(t.category)).reduce((s,t)=>s+t.amount,0);
   const expense=txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  // Balance = all income minus expenses (including cash/transfers)
   const totalIncome=txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const bal=totalIncome-expense;
+  // Carried over from previous cycles
+  const carryOver = getCarryOver(selectedMonth);
+  const bal = totalIncome - expense + carryOver;
   const balEl=document.getElementById('heroBalance');
   balEl.textContent=fmt(bal);
   balEl.className='hero-balance-amount'+(bal<0?' neg':'');
@@ -798,7 +814,24 @@ function applyAllRecurring(){
   toast(added>0?`נוספו ${added} עסקאות קבועות`:'לא נמצאו פריטים חדשים',added>0?'success':'info');
 }
 
+const DEFAULT_BUDGET_ALLOC = {
+  'דיור': 25,
+  'חיסכון': 30,
+  'רכב': 10,
+  'מזון וסופר': 10,
+  'הוצאות משתנות': 10,
+  'בריאות': 5,
+  'תקשורת': 1,
+  'מנויים דיגיטליים': 4,
+  'תרומות': 5,
+};
+
 function renderBudgetAlloc(){
+  // Pre-fill defaults if user hasn't set anything yet
+  if(Object.keys(appData.budgetAlloc).length === 0){
+    appData.budgetAlloc = {...DEFAULT_BUDGET_ALLOC};
+    saveData();
+  }
   document.getElementById('budgetAllocGrid').innerHTML=CATEGORIES.map(cat=>`
     <div class="budget-alloc-item">
       <span class="budget-alloc-label" title="${cat}">${CAT_ICONS[cat]||''} ${cat}</span>
