@@ -547,32 +547,31 @@ function populateCatSelects(){
   });
 }
 
-// Billing cycle: 11th of prev month to 10th of current month
-// Returns "YYYY-MM" of the billing/charge month
+// Billing cycle: starts on 10th of month
+// day >= 10 -> this month's cycle | day < 10 -> previous month's cycle
 function getCycleKey(dateStr){
   if(!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
   if(isNaN(d)) return '';
   let year = d.getFullYear();
   let month = d.getMonth(); // 0-indexed
-  if(d.getDate() >= 11){
-    // Belongs to NEXT month's cycle
-    month += 1;
-    if(month > 11){ month = 0; year++; }
+  if(d.getDate() < 10){
+    // Belongs to previous month's cycle
+    month -= 1;
+    if(month < 0){ month = 11; year--; }
   }
   return `${year}-${String(month+1).padStart(2,'0')}`;
 }
 
-// Get cycle label: "11 במאי – 10 ביוני 2026"
+// Get cycle label: "10 במאי – 9 ביוני 2026"
 function getCycleLabel(cycleKey){
   if(!cycleKey) return '';
   const [y,m] = cycleKey.split('-').map(Number);
-  const endMonth = MONTH_NAMES[m-1];
-  // Previous month
-  let pm = m-2; let py = y;
-  if(pm < 0){ pm = 11; py--; }
-  const startMonth = MONTH_NAMES[pm];
-  return `11 ב${startMonth} – 10 ב${endMonth} ${y}`;
+  const startMonth = MONTH_NAMES[m-1];
+  // Next month
+  let nm = m % 12; let ny = y + (m===12?1:0);
+  const endMonth = MONTH_NAMES[nm];
+  return `10 ב${startMonth} – 9 ב${endMonth} ${y}`;
 }
 
 function getMonths(){
