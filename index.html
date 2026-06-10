@@ -851,7 +851,7 @@ const CATEGORY_KW={
     'coffee','mcdonalds','burger','pizza','kfc','דומינו','restaurant',
     'מסעדה','פלאפל','סטייק','גריל','ביסטרו','hummus','שניצל','שישליק',
     'בשר','דג','אסיאתי','יפני','איטלקי','סינית','אוכל'
-  ],
+  ,'bilios foods','athinaikes gefseis','kosher group','duomo athens','pop-up pita','1962 ike','entelvais','pechnidia','afro.co','tamara','tamara greece','tamara fresh','gefseis','estiasi',"בלה וצ'ארלי",'קפה סילבה','athens be my guest'],
   'מזון וסופר':[
     'שופרסל','רמי לוי','מגה','ויקטורי','יינות ביתן','אושר עד','קשת טעמים',
     'shufersal','rami levy','fresh market','am:pm','סופרמרקט','מכולת',
@@ -867,7 +867,7 @@ const CATEGORY_KW={
     'sonol','delek','yellow','דור אלון','משרד התחבורה','רשיונות נהיגה',
     'אגרה למבחן','חניה','parking','טסט','רכב','auto','car','tires',
     'מוסך','פחחות','דיזל','שמן מנוע','מכונאי'
-  ],
+  ,'ubr*','uber*','uber '],
   'בריאות':[
     'שרותי בריאות כללית','כללית','מכבי','לאומית','מאוחדת',
     'מנורה מבטחים','עזר מציון','בית מרקחת','טבע','super pharm',
@@ -885,7 +885,7 @@ const CATEGORY_KW={
     'youtube','disney','dropbox','zoom','wix','icloud','one drive',
     'canva','figma','chatgpt','openai','cursor','github','notion',
     'subscription','מנוי'
-  ],
+  ,'anthropic','paypal *steam','steam games'],
   'קניות אונליין':[
     'aliexpress','ebay','shein','zalando','asos','ivory','וואלה שופס',
     'amazon','wish','banggood','shopify','etsy','כרזו'
@@ -895,12 +895,12 @@ const CATEGORY_KW={
     'golf','terminal','מספרה','תספורת','שיער','beauty','nail','spa',
     'סלון יופי','פדיקור','מניקור','קוסמטיקה','בגדים','נעליים','shoes',
     'clothes','fashion','mango','pull&bear','stradivarius'
-  ],
+  ,'zara hellas','styl','טרגט'],
   'קניות':[
     'סופר הום','דן דיל','מחסני תאורה','יוניברס','home center','ace',
     'ikea','כלבו','רמי','office depot','office','כלי עבודה','חשמל',
     'ריהוט','furniture','electronics','אלקטרוניקה'
-  ],
+  ,'ksp','משתלת פטל','משתלת'],
   'חינוך':[
     'המרכז האקדמי רופין','רופין','אוניברסיטה','מכללה','college',
     'university','קורס','udemy','coursera','ריבית גישור','בית ספר',
@@ -910,7 +910,7 @@ const CATEGORY_KW={
     'wizz air','wizzair','אל על','ראיין','easy jet','ryanair',
     'booking','airbnb','hotel','sheraton','hilton','חוף גופרה',
     'אתר נופש','טיסה','נמל תעופה','airport','flight','agoda'
-  ],
+  ,'airalo','קווי חופשה','athens be my guest','בנה"פ הזמנת מט'],
   'עמלות בנק':[
     'דמי כרטיס','עמלה','דמי ניהול','עמלת','ריבית','bank fee',
     'עמלת המרה','שירותי בנק','עמלת עסקה'
@@ -1033,26 +1033,44 @@ function parseExcelRows(rows){
 
   // --- FAST PATH: detect Cal/Poalim credit card format ---
   // Row 0 = title, Row 1 = headers with \n, Row 2+ = data
-  // Col 0 = date serial, Col 1 = merchant name, Col 2 = amount
   const r1 = rows[1] || [];
   const h0 = String(r1[0]||'').replace(/\n/g,' ');
   const h1 = String(r1[1]||'').replace(/\n/g,' ');
   const h2 = String(r1[2]||'').replace(/\n/g,' ');
   if(h0.includes('תאריך') && (h1.includes('שם') || h1.includes('פירוט')) && (h2.includes('סכום') || h2.includes('חיוב'))){
-    // Poalim/Cal format confirmed
     const result = [];
     for(let i=2; i<rows.length; i++){
       const row = rows[i];
       if(!row || row.every(c=>c===null||c===undefined||c==='')) continue;
+
+      // col 0 = date, col 1 = merchant, col 2 = amount in ILS
       const dateStr = parseDate(row[0]);
       if(!dateStr) continue;
+
       const desc = String(row[1]||'').trim();
-      if(!desc || desc.includes('סה"כ') || desc.includes('סהכ')) continue;
+      if(!desc || desc.includes('סה"כ') || desc.includes('סהכ') || desc.startsWith('את המידע')) continue;
+
+      // amount is col 2 — but could be null for pending transactions
+      // use col 2 (ILS amount), skip if null/undefined
       const rawAmt = row[2];
-      if(rawAmt===null||rawAmt===undefined||rawAmt==='') continue;
+
+      // Skip rows where amount is a Date object (wrong column) or missing
+      if(rawAmt === null || rawAmt === undefined || rawAmt === '') {
+        // Pending transaction - skip (no amount yet)
+        continue;
+      }
+      if(typeof rawAmt === 'object' && rawAmt instanceof Date) continue;
+
       const num = parseFloat(String(rawAmt).replace(/[,\s]/g,''))||0;
-      if(num<=0) continue;
-      result.push({date:dateStr, desc, amount:num, type:'expense', category:autoCategory(desc)});
+      if(num <= 0) continue; // skip zero amounts (e.g. דמי כרטיס = 0)
+
+      result.push({
+        date: dateStr,
+        desc,
+        amount: num,
+        type: 'expense',
+        category: autoCategory(desc)
+      });
     }
     return result;
   }
