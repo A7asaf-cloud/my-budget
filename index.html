@@ -530,7 +530,7 @@ window.addEventListener('pagehide',saveData);
 function init(){
   loadData();
   const now=new Date();
-  selectedMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  selectedMonth=getCycleKey(now.toISOString().slice(0,10));
   populateCatSelects();
   document.getElementById('tx-date').value=now.toISOString().slice(0,10);
   buildMonthStrip();
@@ -547,13 +547,44 @@ function populateCatSelects(){
   });
 }
 
+// Billing cycle: 11th of prev month to 10th of current month
+// Returns "YYYY-MM" of the billing/charge month
+function getCycleKey(dateStr){
+  if(!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d)) return '';
+  let year = d.getFullYear();
+  let month = d.getMonth(); // 0-indexed
+  if(d.getDate() >= 11){
+    // Belongs to NEXT month's cycle
+    month += 1;
+    if(month > 11){ month = 0; year++; }
+  }
+  return `${year}-${String(month+1).padStart(2,'0')}`;
+}
+
+// Get cycle label: "11 במאי – 10 ביוני 2026"
+function getCycleLabel(cycleKey){
+  if(!cycleKey) return '';
+  const [y,m] = cycleKey.split('-').map(Number);
+  const endMonth = MONTH_NAMES[m-1];
+  // Previous month
+  let pm = m-2; let py = y;
+  if(pm < 0){ pm = 11; py--; }
+  const startMonth = MONTH_NAMES[pm];
+  return `11 ב${startMonth} – 10 ב${endMonth} ${y}`;
+}
+
 function getMonths(){
   const now=new Date();const s=new Set();
-  // Always show 3 months back + current
-  for(let i=3;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);s.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}
-  // Add months that have actual transactions
-  appData.transactions.forEach(t=>s.add(t.date.slice(0,7)));
-  return Array.from(s).sort();
+  // Always show 3 cycles back + current cycle
+  for(let i=3;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,15);
+    s.add(getCycleKey(d.toISOString().slice(0,10)));
+  }
+  // Add cycles from actual transactions
+  appData.transactions.forEach(t=>s.add(getCycleKey(t.date)));
+  return Array.from(s).filter(Boolean).sort();
 }
 
 function buildMonthStrip(){
@@ -562,7 +593,7 @@ function buildMonthStrip(){
     const [y,mo]=m.split('-');
     const btn=document.createElement('button');
     btn.className='hero-month-btn'+(m===selectedMonth?' active':'');
-    btn.textContent=`${MONTH_NAMES[parseInt(mo)-1]} ${y}`;
+    btn.textContent=getCycleLabel(m);
     btn.onclick=()=>{selectedMonth=m;buildMonthStrip();renderDashboard();};
     strip.appendChild(btn);
   });
@@ -572,11 +603,11 @@ function buildMonthStrip(){
 
 function buildFilterMonths(){
   const sel=document.getElementById('filter-month');if(!sel)return;
-  sel.innerHTML='<option value="">כל החודשים</option>'+getMonths().map(m=>{const[y,mo]=m.split('-');return`<option value="${m}">${MONTH_NAMES[parseInt(mo)-1]} ${y}</option>`;}).join('');
+  sel.innerHTML='<option value="">כל המחזורים</option>'+getMonths().map(m=>`<option value="${m}">${getCycleLabel(m)}</option>`).join('');
 }
 
 function renderDashboard(){
-  const txs=appData.transactions.filter(t=>t.date.slice(0,7)===selectedMonth);
+  const txs=appData.transactions.filter(t=>getCycleKey(t.date)===selectedMonth);
   // Only transactions in הכנסה category count as budget income
   const income=txs.filter(t=>t.type==='income' && INCOME_CATS.includes(t.category)).reduce((s,t)=>s+t.amount,0);
   const expense=txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
@@ -598,12 +629,12 @@ function renderDashboard(){
 function renderMonthlyBar(){
   const chart=document.getElementById('monthlyBarChart');chart.innerHTML='';
   const months=getMonths().slice(-12);
-  const vals=months.map(m=>appData.transactions.filter(t=>t.date.slice(0,7)===m&&t.type==='expense').reduce((s,t)=>s+t.amount,0));
+  const vals=months.map(m=>appData.transactions.filter(t=>getCycleKey(t.date)===m&&t.type==='expense').reduce((s,t)=>s+t.amount,0));
   const maxV=Math.max(...vals,1);
   months.forEach((m,i)=>{
-    const [,mo]=m.split('-');
     const pct=Math.max((vals[i]/maxV)*100,vals[i]>0?3:0);
     const isActive=m===selectedMonth;
+    const [,mo]=m.split('-');
     const col=document.createElement('div');col.className='bar-col';
     col.innerHTML=`<div class="bar-fill ${isActive?'active-bar':'inactive-bar'}" style="height:${pct}%" title="${fmt(vals[i])}"></div><div class="bar-label">${MONTH_NAMES[parseInt(mo)-1].slice(0,3)}</div>`;
     col.querySelector('.bar-fill').onclick=()=>{selectedMonth=m;buildMonthStrip();renderDashboard();};
@@ -710,7 +741,7 @@ function addTransaction(){
   document.getElementById('tx-amount').value='';
   closeAddTxModal();
   buildMonthStrip();buildFilterMonths();
-  if(date.slice(0,7)===selectedMonth)renderDashboard();
+  if(getCycleKey(date)===selectedMonth)renderDashboard();
   if(document.getElementById('page-transactions').classList.contains('active'))renderTransactions();
   toast('עסקה נוספה','success');
 }
