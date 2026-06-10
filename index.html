@@ -436,6 +436,16 @@ tr:last-child td { border-bottom: none; }
     </div>
   </div>
   <div class="settings-section">
+    <div class="settings-section-title">זיכרון קטגוריות</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+      האפליקציה לומדת אוטומטית מכל ייבוא ועסקה שמוסיפים. כאן ניתן לנהל את הזיכרון.
+    </div>
+    <div id="userCatMapList" style="margin-bottom:10px;"></div>
+    <button class="btn btn-outline btn-sm" onclick="renderUserCatMap()">רענן רשימה</button>
+    <button class="btn btn-danger-ol btn-sm" style="margin-right:8px" onclick="clearUserCatMap()">נקה זיכרון</button>
+  </div>
+
+  <div class="settings-section">
     <div class="settings-section-title">ייצוא וגיבוי</div>
     <div class="export-grid">
       <button class="btn btn-outline" onclick="exportJSON()">ייצוא JSON</button>
@@ -510,6 +520,7 @@ function loadData(){
     if(r) appData=JSON.parse(r);
     ['transactions','recurringIncome','recurringExpense'].forEach(k=>{if(!appData[k])appData[k]=[];});
     if(!appData.budgetAlloc)appData.budgetAlloc={};
+    if(!appData.userCategoryMap)appData.userCategoryMap={};
   }catch(e){}
 }
 function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));}catch(e){}}
@@ -693,6 +704,7 @@ function addTransaction(){
   const payment=document.getElementById('tx-payment').value;
   if(!date||!desc||!cat||isNaN(amount)||amount<=0){toast('אנא מלא את כל השדות','error');return;}
   appData.transactions.push({id:uid(),date,desc,category:cat,amount,type:currentTxType,payment});
+  learnCategory(desc, cat);
   saveData();
   document.getElementById('tx-desc').value='';
   document.getElementById('tx-amount').value='';
@@ -922,7 +934,53 @@ const CATEGORY_KW={
     'החזר','refund','העברה','הפקדה'
   ]
 };
-function autoCategory(desc){const d=desc.toLowerCase();for(const[cat,kws]of Object.entries(CATEGORY_KW)){if(kws.some(kw=>d.includes(kw.toLowerCase())))return cat;}return'אחר';}
+
+// Auto-category with smarter matching
+function autoCategoryExtra(desc){
+  const d = desc.toLowerCase().trim();
+  // English patterns
+  if(/starbucks|coffee|cafe|espresso|latte/i.test(d)) return 'אוכל ומסעדות';
+  if(/uber|lyft|bolt|gett|taxi|cabify/i.test(d)) return 'רכב';
+  if(/fresh juice|juice bar|smoothie/i.test(d)) return 'אוכל ומסעדות';
+  if(/restaurant|food|eat|dining|bistro|grill|burger|pizza|sushi|wok|noodle|kebab|falafel|shawarma|hummus|bakery|pastry|candy|chocolate|ice cream/i.test(d)) return 'אוכל ומסעדות';
+  if(/supermarket|grocery|market|minimarket|fresh|fruit|vegetable|deli/i.test(d)) return 'מזון וסופר';
+  if(/pharmacy|drugstore|chemist|medical|clinic|hospital|doctor|dentist|optician|health/i.test(d)) return 'בריאות';
+  if(/gym|fitness|sport|yoga|pilates|crossfit|swimming|tennis|basketball/i.test(d)) return 'ספורט';
+  if(/hotel|hostel|motel|resort|airbnb|booking|expedia|tripadvisor|flight|airline|airport/i.test(d)) return 'נסיעות';
+  if(/amazon|aliexpress|ebay|shein|asos|zalando|shopify|etsy/i.test(d)) return 'קניות אונליין';
+  if(/netflix|spotify|apple|google|microsoft|adobe|amazon prime|disney|youtube|dropbox|zoom|icloud/i.test(d)) return 'מנויים דיגיטליים';
+  if(/uber eats|wolt|ten bis|tenbis|deliveroo|just eat/i.test(d)) return 'אוכל ומסעדות';
+  if(/fashion|clothes|clothing|shoes|apparel|zara|h&m|mango|pull&bear/i.test(d)) return 'ביגוד וטיפוח';
+  if(/parking|fuel|gas station|petrol|car wash|mechanic|garage/i.test(d)) return 'רכב';
+  if(/ikea|home|furniture|decor|lighting|hardware/i.test(d)) return 'קניות';
+  if(/bank fee|commission|charge|interest|annual fee/i.test(d)) return 'עמלות בנק';
+  if(/insurance|ביטוח/i.test(d)) return 'בריאות';
+  if(/university|college|course|school|education/i.test(d)) return 'חינוך';
+  return null; // no match
+}
+function autoCategory(desc){
+  const d=desc.toLowerCase().trim();
+  // 1. Check user's personal learned map (exact match)
+  if(appData.userCategoryMap[d]) return appData.userCategoryMap[d];
+  // 2. Check user's learned map with partial match
+  for(const [key,cat] of Object.entries(appData.userCategoryMap)){
+    if(d.includes(key)||key.includes(d)) return cat;
+  }
+  // 3. Keyword list
+  for(const[cat,kws]of Object.entries(CATEGORY_KW)){
+    if(kws.some(kw=>d.includes(kw.toLowerCase())))return cat;
+  }
+  // 4. Regex patterns (English)
+  const extra=autoCategoryExtra(desc);
+  if(extra)return extra;
+  return'אחר';
+}
+
+function learnCategory(desc, category){
+  if(!desc||!category||category==='אחר') return;
+  appData.userCategoryMap[desc.toLowerCase().trim()] = category;
+  saveData();
+}
 function parseBankText(text){
   const lines=text.split('\n');const rows=[];
   const dateRe=/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/;const amtRe=/[\d,]+\.\d{2}/g;
@@ -1084,7 +1142,19 @@ function showPreview(rows,containerId){
     <td style="font-weight:700;white-space:nowrap;text-align:left">${fmt(r.amount)}</td></tr>`).join('');
 }
 function importPreviewRows(){
-  let added=0;previewRows.forEach(r=>{if(!r.date||!r.desc||r.amount<=0)return;appData.transactions.push({id:uid(),date:r.date,desc:r.desc,category:r.category||'אחר',amount:r.amount,type:r.type,payment:'אחר'});added++;});
+  let added=0;
+  previewRows.forEach(r=>{
+    if(!r.date||!r.desc||r.amount<=0)return;
+    // Learn: if user manually set a category different from auto-detect, remember it
+    const auto = autoCategory(r.desc);
+    if(r.category && r.category!=='אחר' && r.category!==auto){
+      learnCategory(r.desc, r.category);
+    } else if(r.category && r.category!=='אחר'){
+      learnCategory(r.desc, r.category);
+    }
+    appData.transactions.push({id:uid(),date:r.date,desc:r.desc,category:r.category||'אחר',amount:r.amount,type:r.type,payment:'אחר'});
+    added++;
+  });
   saveData();renderDashboard();buildMonthStrip();buildFilterMonths();
   toast(`יובאו ${added} עסקאות`,'success');
   document.getElementById('pdfPreviewArea').innerHTML='';document.getElementById('excelPreviewArea').innerHTML='';previewRows=[];
@@ -1111,6 +1181,33 @@ function showConfirm(title,body,actions){
 }
 function closeConfirm(){document.getElementById('confirmModal').style.display='none';}
 
+function renderUserCatMap(){
+  const el = document.getElementById('userCatMapList');
+  if(!el) return;
+  const entries = Object.entries(appData.userCategoryMap||{});
+  if(!entries.length){
+    el.innerHTML='<div style="font-size:12px;color:var(--dim);padding:4px 0;">אין זיכרון עדיין — ייבא עסקאות ותתחיל לצבור</div>';
+    return;
+  }
+  el.innerHTML = `<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">${entries.length} עסקים זכורים</div>` +
+    entries.slice(0,20).map(([name,cat])=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;">
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(name)}">${escHtml(name)}</span>
+        <select class="form-control" style="width:130px;font-size:11px;padding:3px 6px;" onchange="appData.userCategoryMap['${escHtml(name)}']=this.value;saveData();">
+          ${CATEGORIES.map(c=>`<option value="${c}"${c===cat?' selected':''}>${c}</option>`).join('')}
+        </select>
+        <button class="tx-del-btn" onclick="delete appData.userCategoryMap['${escHtml(name)}'];saveData();renderUserCatMap();">✕</button>
+      </div>`).join('') +
+    (entries.length>20 ? `<div style="font-size:11px;color:var(--dim);padding:6px 0;">ועוד ${entries.length-20}...</div>` : '');
+}
+
+function clearUserCatMap(){
+  appData.userCategoryMap={};
+  saveData();
+  renderUserCatMap();
+  toast('זיכרון קטגוריות נוקה','info');
+}
+
 function switchPage(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.desktop-nav-btn').forEach(b=>b.classList.remove('active'));
@@ -1121,7 +1218,7 @@ function switchPage(page){
   document.getElementById('bnav-'+page)?.classList.add('active');
   if(page==='transactions'){renderTransactions();buildFilterMonths();populateCatSelects();}
   if(page==='dashboard')renderDashboard();
-  if(page==='settings'){renderBudgetAlloc();renderRecurringLists();}
+  if(page==='settings'){renderBudgetAlloc();renderRecurringLists();renderUserCatMap();}
 }
 
 function toast(msg,type='info'){
