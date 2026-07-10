@@ -457,12 +457,12 @@ select.form-control { cursor: pointer; }
 <script>
 // ===== CONSTANTS =====
 const STORAGE_KEY = 'budget_app_v3';
-const CATEGORIES = ['דיור','חיסכון','רכב','מזון וסופר','פנאי','השקעות','הוצאות קבועות','הוצאות משתנות','אוכל ומסעדות','בריאות','ביגוד וטיפוח','תקשורת','מנויים דיגיטליים','ספורט','קניות אונליין','קניות','נסיעות','עמלות בנק','תרומות','חינוך','הכנסה','אחר'];
+const CATEGORIES = ['דיור','חיסכון','רכב','אוכל וסופר','פנאי','השקעות','הוצאות קבועות','הוצאות משתנות','בריאות','ביגוד וטיפוח','תקשורת','מנויים דיגיטליים','ספורט','קניות אונליין','קניות','נסיעות','עמלות בנק','תרומות','חינוך','הכנסה','אחר'];
 const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-const CAT_ICONS = {'דיור':'🏠','חיסכון':'🐷','רכב':'🚗','מזון וסופר':'🛒','פנאי':'🎮','השקעות':'📈','הוצאות קבועות':'🔄','הוצאות משתנות':'📦','אוכל ומסעדות':'🍔','בריאות':'💊','ביגוד וטיפוח':'👔','תקשורת':'📱','מנויים דיגיטליים':'💻','ספורט':'⚽','קניות אונליין':'🛍️','קניות':'🏪','נסיעות':'✈️','עמלות בנק':'🏦','תרומות':'🤝','חינוך':'📚','הכנסה':'💰','אחר':'💸'};
+const CAT_ICONS = {'דיור':'🏠','חיסכון':'🐷','רכב':'🚗','אוכל וסופר':'🍽️','פנאי':'🎮','השקעות':'📈','הוצאות קבועות':'🔄','הוצאות משתנות':'📦','בריאות':'💊','ביגוד וטיפוח':'👔','תקשורת':'📱','מנויים דיגיטליים':'💻','ספורט':'⚽','קניות אונליין':'🛍️','קניות':'🏪','נסיעות':'✈️','עמלות בנק':'🏦','תרומות':'🤝','חינוך':'📚','הכנסה':'💰','אחר':'💸'};
 const HBAR_COLORS = ['hbar-red','hbar-blue','hbar-green','hbar-orange','hbar-red','hbar-blue','hbar-green'];
 const INCOME_CATS = ['הכנסה','משכורת'];
-const DEFAULT_BUDGET = {'דיור':25,'חיסכון':30,'רכב':10,'מזון וסופר':10,'הוצאות משתנות':10,'בריאות':5,'תקשורת':1,'מנויים דיגיטליים':4,'תרומות':5};
+const DEFAULT_BUDGET = {'דיור':25,'חיסכון':30,'רכב':10,'אוכל וסופר':10,'הוצאות משתנות':10,'בריאות':5,'תקשורת':1,'מנויים דיגיטליים':4,'תרומות':5};
 
 // ===== DATA =====
 let appData = {transactions:[],recurringIncome:[],recurringExpense:[],budgetAlloc:{},userCategoryMap:{}};
@@ -833,8 +833,7 @@ function clearUserCatMap(){
 
 // ===== CATEGORY DETECTION =====
 const CATEGORY_KW = {
-  'אוכל ומסעדות': ['ספייס אינביידרז','זסטי','שוארמה','meatshop','sandwich','באפלו','נונומימי','אמריקן פיצה','עולם המזון','מיקה מרקט','קצביית','מ.מ.ש','מאפיי','שאלתיאלי','סעוד','מקדונלד','בורגר','פיצה','סושי','קפה','cafe','coffee','mcdonalds','burger','pizza','kfc','דומינו','restaurant','מסעדה','פלאפל','סטייק','גריל','hummus','bilios foods','athinaikes','kosher group','duomo','pop-up pita','1962 ike','entelvais','pechnidia','afro','tamara','tamara greece','tamara fresh','estiasi','athens be my guest','קפה סילבה',"בלה וצ'ארלי"],
-  'מזון וסופר': ['שופרסל','רמי לוי','מגה','ויקטורי','יינות ביתן','אושר עד','קשת טעמים','shufersal','rami levy','fresh market','am:pm','סופרמרקט','מכולת','super','supermarket'],
+  'אוכל וסופר': ['ספייס אינביידרז','זסטי','שוארמה','meatshop','sandwich','באפלו','נונומימי','אמריקן פיצה','עולם המזון','מיקה מרקט','קצביית','מ.מ.ש','מאפיי','שאלתיאלי','סעוד','מקדונלד','בורגר','פיצה','סושי','קפה','cafe','coffee','mcdonalds','burger','pizza','kfc','דומינו','restaurant','מסעדה','פלאפל','סטייק','גריל','hummus','bilios foods','athinaikes','kosher group','duomo','pop-up pita','1962 ike','entelvais','pechnidia','afro','tamara','tamara greece','tamara fresh','estiasi','athens be my guest','קפה סילבה',"בלה וצ'ארלי",'שופרסל','רמי לוי','מגה','ויקטורי','יינות ביתן','אושר עד','קשת טעמים','shufersal','rami levy','fresh market','am:pm','סופרמרקט','מכולת','super','supermarket'],
   'ספורט': ['ספייס מועדוני כושר','ספייס כושר','fitness','gym','דקתלון','decathlon','כושר','מועדון ספורט'],
   'רכב': ['אפליקציית ten','ten ','ubr*','uber*','uber ','פז','סונול','דלק','צמיגים','מוסך','paz','sonol','delek','yellow','דור אלון','משרד התחבורה','רשיונות נהיגה','חניה','טסט'],
   'בריאות': ['שרותי בריאות כללית','כללית','מכבי','לאומית','מאוחדת','מנורה מבטחים','עזר מציון','בית מרקחת','טבע','super pharm','pharmacy','רופא','מרפאה','ביטוח','dental','שיניים','אופטיקה','מנורה ביטוח'],
@@ -855,9 +854,9 @@ const CATEGORY_KW = {
 
 function autoCategoryRegex(desc){
   const d = desc.toLowerCase();
-  if(/starbucks|coffee|cafe|espresso|latte|juice bar|smoothie|restaurant|food court|dining|bistro|bakery|pastry/i.test(d)) return 'אוכל ומסעדות';
+  if(/starbucks|coffee|cafe|espresso|latte|juice bar|smoothie|restaurant|food court|dining|bistro|bakery|pastry/i.test(d)) return 'אוכל וסופר';
   if(/uber(?!.*eat)|lyft|bolt|taxi|cabify|gett/i.test(d)) return 'רכב';
-  if(/uber.*(eat|food)|wolt|deliveroo|just eat/i.test(d)) return 'אוכל ומסעדות';
+  if(/uber.*(eat|food)|wolt|deliveroo|just eat/i.test(d)) return 'אוכל וסופר';
   if(/netflix|spotify|apple|google|microsoft|adobe|disney|youtube|dropbox|zoom|icloud|subscription/i.test(d)) return 'מנויים דיגיטליים';
   if(/hotel|hostel|resort|airbnb|booking|expedia|flight|airline|airport/i.test(d)) return 'נסיעות';
   if(/pharmacy|drugstore|medical|clinic|hospital|doctor|dentist|health/i.test(d)) return 'בריאות';
@@ -865,7 +864,7 @@ function autoCategoryRegex(desc){
   if(/amazon|aliexpress|ebay|shein|asos|zalando/i.test(d)) return 'קניות אונליין';
   if(/fashion|clothes|clothing|shoes|apparel|zara|h&m|mango/i.test(d)) return 'ביגוד וטיפוח';
   if(/parking|fuel|gas station|petrol|car wash|mechanic/i.test(d)) return 'רכב';
-  if(/supermarket|grocery|market|minimarket/i.test(d)) return 'מזון וסופר';
+  if(/supermarket|grocery|market|minimarket/i.test(d)) return 'אוכל וסופר';
   if(/bank fee|commission|annual fee/i.test(d)) return 'עמלות בנק';
   return null;
 }
