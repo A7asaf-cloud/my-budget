@@ -483,15 +483,15 @@ document.addEventListener('visibilitychange', saveData);
 window.addEventListener('pagehide', saveData);
 
 // ===== CYCLE LOGIC =====
-// Cycle starts on 9th (salary ~9-10th)
-// day >= 9 = this month's cycle | day < 9 = previous month's cycle
+// Cycle starts on 10th (salary arrives on 10th)
+// day >= 10 = this month's cycle | day < 10 = previous month's cycle
 function getCycleKey(dateStr){
   if(!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
   if(isNaN(d.getTime())) return '';
   let year = d.getFullYear();
   let month = d.getMonth();
-  if(d.getDate() < 9){ month--; if(month < 0){ month = 11; year--; } }
+  if(d.getDate() < 10){ month--; if(month < 0){ month = 11; year--; } }
   return year + '-' + String(month+1).padStart(2,'0');
 }
 
@@ -502,7 +502,7 @@ function getCycleLabel(key){
   const nm = m % 12;
   const ny = m === 12 ? y+1 : y;
   const endM = MONTH_NAMES[nm];
-  return '9 ב' + startM + ' – 8 ב' + endM + ' ' + y;
+  return '10 ב' + startM + ' – 9 ב' + endM + ' ' + y;
 }
 
 // ===== INIT =====
